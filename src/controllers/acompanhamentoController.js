@@ -1,0 +1,121 @@
+const AcompanhamentoRepository = require('../repository/professorRepository');
+
+class AcompanhamentoController {
+    constructor() {
+        this.acompanhamentoRepository = new AcompanhamentoRepository();
+    }
+
+    async cadastrarEvento(req, res) {
+        try {
+            const { aluno, tipoEvento, descricao, relato, visaoGeral } = req.body;
+
+            if (!aluno || !tipoEvento) {
+                return res.status(400).json({ success: false, message: 'Os campos "aluno" e "tipoEvento" são obrigatórios.' });
+            }
+
+            let registrarEventoFunction;
+
+            switch (tipoEvento.toLowerCase()) {
+                case 'briga':
+                case 'rendimento abaixo':
+                case 'pouca participacao':
+                case 'alto rendimento':
+                    registrarEventoFunction = this.acompanhamentoRepository[`registrar${tipoEvento.replace(/\s+/g, '')}`];
+                    break;
+                case 'relato extra':
+                    if (!relato) {
+                        return res.status(400).json({ success: false, message: 'O campo "relato" é obrigatório para "Relato Extra".' });
+                    }
+                    registrarEventoFunction = this.acompanhamentoRepository.registrarRelatoExtra;
+                    break;
+                case 'visão geral turma':
+                    if (!visaoGeral) {
+                        return res.status(400).json({ success: false, message: 'O campo "visaoGeral" é obrigatório para "Visão Geral Turma".' });
+                    }
+                    registrarEventoFunction = this.acompanhamentoRepository.registrarVisaoGeralTurma;
+                    break;
+                default:
+                    return res.status(400).json({ success: false, message: 'Tipo de evento desconhecido.' });
+            }
+
+            if (typeof registrarEventoFunction === 'function') {
+                registrarEventoFunction.call(this.acompanhamentoRepository, aluno, descricao);
+                res.status(201).json({ success: true, message: `${tipoEvento} registrado com sucesso.` });
+            } else {
+                res.status(500).json({ success: false, message: 'Erro ao processar o formulário.' });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false, message: 'Erro ao processar o formulário.' });
+        }
+    }
+    
+
+    async obterRelatorio(req, res) {
+        try {
+          const relatorio = await this.acompanhamentoRepository.obterRelatorio();
+          res.status(200).json({ success: true, relatorio });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ success: false, message: 'Erro ao obter relatório.' });
+        }
+      }
+
+
+
+      async atualizarAcompanhamento(req, res) {
+        try {
+            const { id, descricao, relato, visao_geral, aluno, tipo_evento } = req.body;
+    
+            if (!id || !descricao) {
+                return res.status(400).json({ success: false, message: 'Os campos "id" e "descricao" são obrigatórios.' });
+            }
+    
+            const acompanhamentoAtualizado = await this.acompanhamentoRepository.atualizarAcompanhamento(id, { descricao, relato, visao_geral, aluno, tipo_evento });
+    
+            res.status(200).json({ success: true, message: 'Acompanhamento atualizado com sucesso.', data: acompanhamentoAtualizado });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false, message: 'Erro ao atualizar o acompanhamento.' });
+        }
+    }
+
+    
+
+    async recuperarAcompanhamento(req, res) {
+        const { id } = req.params;
+
+        try {
+            const acompanhamento = await this.acompanhamentoRepository.recuperarAcompanhamento(id);
+
+            if (acompanhamento) {
+                res.status(200).json({ success: true, data: acompanhamento });
+            } else {
+                res.status(404).json({ success: false, message: 'Acompanhamento não encontrado' });
+            }
+        } catch (error) {
+            console.error('Erro ao recuperar acompanhamento:', error);
+            res.status(500).json({ success: false, message: 'Erro interno no servidor' });
+        }
+    }
+      
+    
+    
+
+    async excluirAcompanhamento(req, res) {
+        try {
+            const { id } = req.params;
+    
+            await this.acompanhamentoRepository.excluirAcompanhamento(id);
+    
+            res.status(200).json({ success: true, message: 'Acompanhamento excluído com sucesso.' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false, message: 'Erro ao excluir o acompanhamento.' });
+        }
+    }
+
+    
+}
+
+module.exports = AcompanhamentoController;
