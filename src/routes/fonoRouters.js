@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const AcompanhamentoFonoController = require('../controllers/registroFonoaudiologoController'); // Certifique-se de que a capitalização está correta
+const AcompanhamentoFonoController = require('../controllers/registroFonoaudiologoController');
 
 const acompanhamentoFonoController = new AcompanhamentoFonoController();
 
-// Rota para registrar um novo acompanhamento fonoaudiológico
+
 router.post('/', (req, res) => {
     acompanhamentoFonoController.registrarAcompanhamento(req, res);
 });

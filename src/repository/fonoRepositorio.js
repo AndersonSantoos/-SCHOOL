@@ -6,9 +6,9 @@ class AcompanhamentoFonoRepository {
         this.acompanhamentoFono = new AcompanhamentoFonoaudiologo();
     }
 
-    registrarAcompanhamentoFonoaudiologo(aluno, observacoes, documentos) {
+    async registrarAcompanhamentoFonoaudiologo(aluno, observacoes, documentos) {
         const query = 'INSERT INTO acompanhamento_fonoaudiologo (aluno, observacoes, documentos) VALUES (?, ?, ?)';
-        this.db.query(query, [aluno, observacoes, documentos], (err) => {
+         await this.db.query(query, [aluno, observacoes, documentos], (err) => {
             if (err) {
                 console.error('Erro ao cadastrar acompanhamento fonoaudiologo:', err);
             }
