@@ -39,7 +39,15 @@ class AcompanhamentoController {
             }
 
             if (typeof registrarEventoFunction === 'function') {
-                registrarEventoFunction.call(this.acompanhamentoRepository, aluno, descricao);
+                // Ajuste para passar relato e visaoGeral conforme necessário
+                if (tipoEvento.toLowerCase() === 'relato extra') {
+                    registrarEventoFunction.call(this.acompanhamentoRepository, aluno, descricao, relato, null);
+                } else if (tipoEvento.toLowerCase() === 'visão geral turma') {
+                    registrarEventoFunction.call(this.acompanhamentoRepository, visaoGeral);
+                } else {
+                    registrarEventoFunction.call(this.acompanhamentoRepository, aluno, descricao, relato, visaoGeral);
+                }
+
                 res.status(201).json({ success: true, message: `${tipoEvento} registrado com sucesso.` });
             } else {
                 res.status(500).json({ success: false, message: 'Erro ao processar o formulário.' });
@@ -65,13 +73,19 @@ class AcompanhamentoController {
 
       async atualizarAcompanhamento(req, res) {
         try {
-            const { id, descricao, relato, visao_geral, aluno, tipo_evento } = req.body;
+            const { id, descricao, relato, visaoGeral, aluno, tipo_evento } = req.body;
     
             if (!id || !descricao) {
                 return res.status(400).json({ success: false, message: 'Os campos "id" e "descricao" são obrigatórios.' });
             }
     
-            const acompanhamentoAtualizado = await this.acompanhamentoRepository.atualizarAcompanhamento(id, { descricao, relato, visao_geral, aluno, tipo_evento });
+            const acompanhamentoAtualizado = await this.acompanhamentoRepository.atualizarAcompanhamento(id, {
+                descricao,
+                relato,
+                visao_geral: visaoGeral, 
+                aluno,
+                tipo_evento, 
+            });
     
             res.status(200).json({ success: true, message: 'Acompanhamento atualizado com sucesso.', data: acompanhamentoAtualizado });
         } catch (error) {
@@ -79,6 +93,7 @@ class AcompanhamentoController {
             res.status(500).json({ success: false, message: 'Erro ao atualizar o acompanhamento.' });
         }
     }
+    
 
     
 

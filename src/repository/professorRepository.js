@@ -9,38 +9,36 @@ class AcompanhamentoRepository {
         this.acompanhamentoProfessor = new AcompanhamentoProfessor();
     }
 
-    registrarBriga(aluno, descricao) {
-        const query = 'INSERT INTO eventos_acompanhamento (aluno, tipo_evento, descricao) VALUES (?, ?, ?)';
-        this.db.query(query, [aluno, 'Briga', descricao], (err) => {
+    registrarBriga(aluno, descricao, relato, visaoGeral) {
+        const query = 'INSERT INTO eventos_acompanhamento (aluno, tipo_evento, descricao, relato, visao_geral) VALUES (?, ?, ?, ?, ?)';
+        this.db.query(query, [aluno, 'Briga', descricao, relato, visaoGeral], (err) => {
             if (err) {
                 console.error('Erro ao cadastrar evento de Briga:', err);
             }
         });
     }
 
-    registrarRendimentoAbaixo(aluno, descricao) {
-        const query = 'INSERT INTO eventos_acompanhamento (aluno, tipo_evento, descricao) VALUES (?, ?, ?)';
-        this.db.query(query, [aluno, 'Rendimento Abaixo', descricao], (err) => {
+    registrarRendimentoAbaixo(aluno, descricao, relato, visaoGeral) {
+        const query = 'INSERT INTO eventos_acompanhamento (aluno, tipo_evento, descricao, relato, visao_geral) VALUES (?, ?, ?, ?, ?)';
+        this.db.query(query, [aluno, 'Rendimento Abaixo', descricao, relato, visaoGeral], (err) => {
             if (err) {
                 console.error('Erro ao cadastrar evento de Rendimento Abaixo:', err);
             }
         });
     }
 
-    registrarPoucaParticipacao(aluno, descricao) {
-        const query = 'INSERT INTO eventos_acompanhamento (aluno, tipo_evento, descricao) VALUES (?, ?, ?)';
-        this.db.query(query, [aluno, 'Pouca Participacao', descricao], (err) => {
+    registrarPoucaParticipacao(aluno, descricao, relato, visaoGeral) {
+        const query = 'INSERT INTO eventos_acompanhamento (aluno, tipo_evento, descricao, relato, visao_geral) VALUES (?, ?, ?, ?, ?)';
+        this.db.query(query, [aluno, 'Pouca Participacao', descricao, relato, visaoGeral], (err) => {
             if (err) {
                 console.error('Erro ao cadastrar evento de Pouca Participação:', err);
             } 
         });
     }
-    
-    
 
-    registrarAltoRendimento(aluno, descricao) {
-        const query = 'INSERT INTO eventos_acompanhamento (aluno, tipo_evento, descricao) VALUES (?, ?, ?)';
-        this.db.query(query, [aluno, 'Alto Rendimento', descricao], (err) => {
+    registrarAltoRendimento(aluno, descricao, relato, visaoGeral) {
+        const query = 'INSERT INTO eventos_acompanhamento (aluno, tipo_evento, descricao, relato, visao_geral) VALUES (?, ?, ?, ?, ?)';
+        this.db.query(query, [aluno, 'Alto Rendimento', descricao, relato, visaoGeral], (err) => {
             if (err) {
                 console.error('Erro ao cadastrar evento de Alto Rendimento:', err);
             }
@@ -48,8 +46,8 @@ class AcompanhamentoRepository {
     }
 
     registrarRelatoExtra(aluno, relato) {
-        const query = 'INSERT INTO eventos_acompanhamento (aluno, tipo_evento, descricao) VALUES (?, ?, ?)';
-        this.db.query(query, [aluno, 'Relato Extra', relato], (err) => {
+        const query = 'INSERT INTO eventos_acompanhamento (aluno, tipo_evento, descricao, relato) VALUES (?, ?, ?, ?)';
+        this.db.query(query, [aluno, 'Relato Extra', relato, null], (err) => {
             if (err) {
                 console.error('Erro ao cadastrar evento de Relato Extra:', err);
             }
@@ -90,9 +88,6 @@ class AcompanhamentoRepository {
           throw error;
         }
       }
-      
-      
-      
       
 
       async recuperarAcompanhamento(id) {

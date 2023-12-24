@@ -1,6 +1,5 @@
 const express = require('express');
 const AcompanhamentoController = require('../controllers/acompanhamentoController');
-
 const router = express.Router();
 const acompanhamentoController = new AcompanhamentoController();
 
