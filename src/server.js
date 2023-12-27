@@ -3,7 +3,7 @@ const app = express();
 const bodyParser = require ("body-parser");
 const cors = require ("cors");
 const port = 3000;
-const acompanhamentoRoutes = require('./routes/acompanhamentoProfRoutes');
+const acompanhamentoRoutes = require('./routes/profRoutes');
 const fonoRouters = require('./routes/fonoRouters');
 const psicologico = require('./routes/psicologicoRouters');
 

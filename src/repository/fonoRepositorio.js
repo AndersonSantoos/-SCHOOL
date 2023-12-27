@@ -1,19 +1,33 @@
-const AcompanhamentoFonoaudiologo = require("../models/acompanhamentoFono");
+const acompanhamentoFonoaudiologo = require("../models/acompanhamentoFonoModel");
 
 class AcompanhamentoFonoRepository {
     constructor() {
         this.db = require('../db/dbConfig');
-        this.acompanhamentoFono = new AcompanhamentoFonoaudiologo();
     }
 
     async registrarAcompanhamentoFonoaudiologo(aluno, observacoes, documentos) {
-        const query = 'INSERT INTO acompanhamento_fonoaudiologo (aluno, observacoes, documentos) VALUES (?, ?, ?)';
-         await this.db.query(query, [aluno, observacoes, documentos], (err) => {
-            if (err) {
-                console.error('Erro ao cadastrar acompanhamento fonoaudiologo:', err);
+        try {
+            if (!aluno || !observacoes || !documentos) {
+                throw new Error('Todos os campos devem ser preenchidos.');
             }
-        });
+
+            const query = 'INSERT INTO acompanhamento_fonoaudiologo (aluno, observacoes, documentos) VALUES (?, ?, ?)';
+            await this.db.query(query, [aluno, observacoes, documentos]);
+
+            const acompanhamento = new acompanhamentoFonoaudiologo({
+                aluno,
+                observacoes,
+                documentos
+            });
+
+            console.log('Acompanhamento fonoaudiológico cadastrado com sucesso.');
+            return acompanhamento;
+        } catch (error) {
+            console.error('Erro ao cadastrar acompanhamento fonoaudiológico:', error.message);
+            throw error;
+        }
     }
+    
 
 
     async obterAcompanhamentoPorId(id) {
@@ -27,33 +41,60 @@ class AcompanhamentoFonoRepository {
                 return null;
             }
     
-            const acompanhamento = result[0][0];
+            const acompanhamentoData = result[0][0];
+            const acompanhamento = new acompanhamentoFonoaudiologo(
+                acompanhamentoData.aluno,
+                acompanhamentoData.observacoes,
+                acompanhamentoData.documentos
+            );
+    
             return acompanhamento;
         } catch (error) {
-            console.error('Erro ao obter acompanhamento por ID:', error);
+            console.error('Erro ao obter acompanhamento por ID:', error.message);
             throw error;
         }
     }
+    
+    
 
     async atualizarAcompanhamentoFonoaudiologo(id, aluno, observacoes, documentos) {
         try {
             const query = 'UPDATE acompanhamento_fonoaudiologo SET aluno = ?, observacoes = ?, documentos = ? WHERE id = ?';
             await this.db.query(query, [aluno, observacoes, documentos, id]);
+    
+            console.log('Acompanhamento fonoaudiológico atualizado com sucesso.');
+    
+            
+            const acompanhamentoAtualizado = new acompanhamentoFonoaudiologo(aluno, observacoes, documentos);
+            acompanhamentoAtualizado.id = id; 
+    
+            return acompanhamentoAtualizado;
         } catch (error) {
-            console.error('Erro ao atualizar acompanhamento por ID:', error);
+            console.error('Erro ao atualizar acompanhamento por ID:', error.message);
             throw error;
         }
     }
+    
+    
+
 
     async excluirAcompanhamentoFonoaudiologo(id) {
         try {
+           
+            const acompanhamentoExcluido = await this.obterAcompanhamentoPorId(id);
+    
             const query = 'DELETE FROM acompanhamento_fonoaudiologo WHERE id = ?';
             await this.db.query(query, [id]);
+    
+            console.log('Acompanhamento fonoaudiológico excluído com sucesso.');
+            return acompanhamentoExcluido;
         } catch (error) {
-            console.error('Erro ao excluir acompanhamento por ID:', error);
+            console.error('Erro ao excluir acompanhamento por ID:', error.message);
             throw error;
         }
     }
+    
+    
     
     
     
