@@ -73,10 +73,10 @@ class AcompanhamentoPsicologicoRepository {
     async excluirAcompanhamentoPsicologico(id) {
         try {
             const acompanhamentoExcluido = await this.obterAcompanhamentoPorId(id);
-
-            const query = 'DELETE FROM acompanhamento_psicologico WHERE id = ?';
-            await this.db.query(query, [id]);
-
+    
+            const query = 'UPDATE acompanhamento_psicologico SET status = ?, versao = versao + 1 WHERE id = ?';
+            await this.db.query(query, ['excluido', id]);
+    
             console.log('Acompanhamento psicológico excluído com sucesso.');
             return acompanhamentoExcluido;
         } catch (error) {
@@ -84,6 +84,7 @@ class AcompanhamentoPsicologicoRepository {
             throw error;
         }
     }
+    
 }
 
 module.exports = AcompanhamentoPsicologicoRepository;

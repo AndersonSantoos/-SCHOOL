@@ -137,24 +137,35 @@ class AcompanhamentoRepository {
         }
     }
 
+
     async recuperarAcompanhamento(id) {
         try {
-            const query = 'SELECT * FROM eventos_acompanhamento WHERE id = ?';
-            const [acompanhamento] = await this.db.query(query, [id]);
-
+            const query = 'SELECT * FROM eventos_acompanhamento WHERE id = ? AND status != ?';
+            const [acompanhamento] = await this.db.query(query, [id, 'excluido']);
+    
             return acompanhamento[0];
         } catch (error) {
             console.error('Erro ao recuperar acompanhamento:', error);
             throw error;
         }
     }
+    
 
     async excluirAcompanhamento(id) {
         try {
-            const query = 'DELETE FROM eventos_acompanhamento WHERE id = ?';
-            await this.db.execute(query, [id]);
+            const acompanhamentoExcluido = await this.recuperarAcompanhamento(id);
+    
+            if (!acompanhamentoExcluido) {
+                return false; // Acompanhamento não encontrado, retorna false ou lança uma exceção, conforme preferir
+            }
+    
+            const query = 'UPDATE eventos_acompanhamento SET status = ?, data_registro = CURRENT_TIMESTAMP WHERE id = ?';
+            await this.db.query(query, ['excluido', id]);
+    
+            console.log('Acompanhamento excluído com sucesso.');
+            return true;
         } catch (error) {
-            console.error('Erro ao excluir acompanhamento:', error);
+            console.error('Erro ao excluir acompanhamento por ID:', error.message);
             throw error;
         }
     }

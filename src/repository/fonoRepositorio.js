@@ -80,11 +80,10 @@ class AcompanhamentoFonoRepository {
 
     async excluirAcompanhamentoFonoaudiologo(id) {
         try {
-           
             const acompanhamentoExcluido = await this.obterAcompanhamentoPorId(id);
     
-            const query = 'DELETE FROM acompanhamento_fonoaudiologo WHERE id = ?';
-            await this.db.query(query, [id]);
+            const query = 'UPDATE acompanhamento_fonoaudiologo SET status = ?, versao = versao + 1 WHERE id = ?';
+            await this.db.query(query, ['excluido', id]);
     
             console.log('Acompanhamento fonoaudiológico excluído com sucesso.');
             return acompanhamentoExcluido;
@@ -93,6 +92,7 @@ class AcompanhamentoFonoRepository {
             throw error;
         }
     }
+    
     
     
     

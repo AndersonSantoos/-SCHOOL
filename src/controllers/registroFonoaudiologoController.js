@@ -62,15 +62,19 @@ class AcompanhamentoFonoController {
     async excluirAcompanhamento(req, res) {
         try {
             const id = req.params.id;
-
-            await this.acompanhamentoFonoRepository.excluirAcompanhamentoFonoaudiologo(id);
-
-            return res.status(200).json({ message: 'Acompanhamento fonoaudiológico excluído com sucesso.' });
+            const resultadoExclusao = await this.acompanhamentoFonoRepository.excluirAcompanhamentoFonoaudiologo(id);
+    
+            if (resultadoExclusao) {
+                return res.status(200).json({ message: 'Acompanhamento fonoaudiológico excluído com sucesso.' });
+            } else {
+                return res.status(404).json({ error: 'Acompanhamento fonoaudiológico não encontrado.' });
+            }
         } catch (error) {
             console.error('Erro ao processar solicitação de exclusão:', error);
             return res.status(500).json({ error: 'Erro interno do servidor.' });
         }
     }
+    
     
 
 

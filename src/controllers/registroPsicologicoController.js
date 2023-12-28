@@ -58,14 +58,19 @@ class AcompanhamentoPsicologicoController {
     async excluirAcompanhamentoPsicologico(req, res) {
         try {
             const id = req.params.id;
-            await this.acompanhamentoPsicologicoRepository.excluirAcompanhamentoPsicologico(id);
-
-            return res.status(200).json({ message: 'Acompanhamento fonoaudiológico excluído com sucesso.' });
+            const resultadoExclusao = await this.acompanhamentoPsicologicoRepository.excluirAcompanhamentoPsicologico(id);
+    
+            if (resultadoExclusao) {
+                return res.status(200).json({ message: 'Acompanhamento psicológico excluído com sucesso.' });
+            } else {
+                return res.status(404).json({ error: 'Acompanhamento psicológico não encontrado.' });
+            }
         } catch (error) {
             console.error('Erro ao processar solicitação de exclusão:', error);
             return res.status(500).json({ error: 'Erro interno do servidor.' });
         }
     }
+    
 }
 
 module.exports = AcompanhamentoPsicologicoController;
