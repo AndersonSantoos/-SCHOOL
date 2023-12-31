@@ -1,4 +1,4 @@
-const acompanhamentoFonoaudiologo = require("../models/acompanhamentoFonoModel");
+const acompanhamentoFonoaudiologo = require("../models/fonoModel");
 
 class AcompanhamentoFonoRepository {
     constructor() {

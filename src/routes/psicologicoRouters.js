@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const AcompanhamentoPsicologicoController = require("../controllers/registroPsicologicoController"); 
+const AcompanhamentoPsicologicoController = require("../controllers/psicologoController"); 
 const acompanhamentoPsicologicoController = new AcompanhamentoPsicologicoController(); 
 
 router.post('/cadastrarPsicologico', (req, res) => {

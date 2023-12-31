@@ -1,5 +1,5 @@
 const express = require('express');
-const AcompanhamentoController = require('../controllers/registroProfessorController');
+const AcompanhamentoController = require('../controllers/profController');
 const router = express.Router();
 const acompanhamentoController = new AcompanhamentoController();
 

@@ -1,4 +1,4 @@
-const AcompanhamentoRepository = require('../repository/professorRepositorio');
+const AcompanhamentoRepository = require('../repository/profRepositorio');
 
 class AcompanhamentoController {
     constructor() {
@@ -73,7 +73,7 @@ class AcompanhamentoController {
 
       async atualizarAcompanhamento(req, res) {
         try {
-            const { id, descricao, relato, visao_geral, aluno, tipo_evento } = req.body;
+            const { id, descricao, relato, visaoGeral, aluno, tipoEvento } = req.body;
     
             if (!id || !descricao) {
                 return res.status(400).json({ success: false, message: 'Os campos "id" e "descricao" são obrigatórios.' });
@@ -82,9 +82,9 @@ class AcompanhamentoController {
             const acompanhamentoAtualizado = await this.acompanhamentoRepository.atualizarAcompanhamento(id, {
                 descricao,
                 relato,
-                visao_geral: visao_geral, 
+                visaoGeral: visaoGeral, 
                 aluno,
-                tipo_evento, 
+                tipoEvento, 
             });
     
             res.status(200).json({ success: true, message: 'Acompanhamento atualizado com sucesso.', data: acompanhamentoAtualizado });

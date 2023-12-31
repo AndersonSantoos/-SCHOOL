@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const AcompanhamentoFonoController = require('../controllers/registroFonoaudiologoController');
+const AcompanhamentoFonoController = require('../controllers/fonoController');
 
 const acompanhamentoFonoController = new AcompanhamentoFonoController();
 

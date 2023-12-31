@@ -1,4 +1,4 @@
-const acompanhamentoPsicologicoRepository = require("../repository/psicologicoRepositorio");
+const acompanhamentoPsicologicoRepository = require("../repository/psicologoRepositorio");
 
 class AcompanhamentoPsicologicoController {
     constructor() {

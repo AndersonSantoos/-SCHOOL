@@ -1,4 +1,4 @@
-const AcompanhamentoProfessor = require('../models/acompanhamentoProfessorModel');
+const AcompanhamentoProfessor = require('../models/professorModel');
 
 class AcompanhamentoRepository {
     constructor() {
@@ -119,16 +119,16 @@ class AcompanhamentoRepository {
 
     async atualizarAcompanhamento(id, novosDados) {
         try {
-            const { descricao, relato, visao_geral, aluno, tipo_evento } = novosDados;
+            const { descricao, relato, visaoGeral, aluno, tipoEvento } = novosDados;
     
-            if (!aluno || !descricao || !relato || !visao_geral || !tipo_evento) {
+            if (!aluno || !descricao || !relato || !visaoGeral || !tipoEvento) {
                 throw new Error('Todos os campos devem ser preenchidos.');
             }
     
-            console.log("Valores da consulta:", descricao, relato, visao_geral, aluno, tipo_evento, id);
+            console.log("Valores da consulta:", descricao, relato, visaoGeral, aluno, tipoEvento, id);
     
             const query = 'UPDATE eventos_acompanhamento SET descricao = ?, relato = ?, visao_geral = ?, aluno = ?, tipo_evento = ? WHERE id = ?';
-            await this.db.execute(query, [descricao, relato, visao_geral, aluno, tipo_evento, id]);
+            await this.db.execute(query, [descricao, relato, visaoGeral, aluno, tipoEvento, id]);
     
             console.log('Acompanhamento atualizado com sucesso.');
         } catch (error) {
@@ -158,8 +158,8 @@ class AcompanhamentoRepository {
             if (!acompanhamentoExcluido) {
                 return false; // Acompanhamento não encontrado, retorna false ou lança uma exceção, conforme preferir
             }
-    
-            const query = 'UPDATE eventos_acompanhamento SET status = ?, data_registro = CURRENT_TIMESTAMP WHERE id = ?';
+            
+            const query = 'UPDATE eventos_acompanhamento SET status = ?, versao = versao + 1 WHERE id = ?';
             await this.db.query(query, ['excluido', id]);
     
             console.log('Acompanhamento excluído com sucesso.');
