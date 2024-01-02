@@ -9,7 +9,7 @@ class AcompanhamentoController {
         try {
             const { aluno, tipoEvento, descricao, relato, visaoGeral } = req.body;
 
-            if (!aluno || !tipoEvento) {
+            if (!aluno || !tipoEvento || !descricao || !relato || !visaoGeral) {
                 return res.status(400).json({ success: false, message: 'Os campos "aluno" e "tipoEvento" são obrigatórios.' });
             }
 
