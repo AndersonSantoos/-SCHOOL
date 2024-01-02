@@ -25,4 +25,4 @@ app.use('/', coordenadorRouters);
 
 app.listen(port, () => {
     console.log(`Servidor funcionando na porta: ${port}`)
-})
+});
