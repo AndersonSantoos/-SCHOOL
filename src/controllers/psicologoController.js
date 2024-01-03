@@ -23,7 +23,7 @@ class AcompanhamentoPsicologicoController {
 
 
     async obterAcompnhamentoPorId(req, res) {
-        const id = req.params;
+        const id = req.params.id;
 
         try {
             const acompanhamento = await this.acompanhamentoPsicologicoRepository.obterAcompanhamentoPorId(id);

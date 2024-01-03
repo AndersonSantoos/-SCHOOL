@@ -1,8 +1,9 @@
 const acompanhamentoPsicologico = require("../models/psicologoModel");
+const db = require("../db/dbConfig");
 
 class AcompanhamentoPsicologicoRepository {
     constructor() {
-        this.db = require('../db/dbConfig');
+        
     }
 
     async registrarAcompanhamentoPsicologico(aluno, observacoes, documentos) {
@@ -12,7 +13,7 @@ class AcompanhamentoPsicologicoRepository {
             }
 
             const query = 'INSERT INTO acompanhamento_psicologico (aluno, observacoes, documentos) VALUES (?, ?, ?)';
-            await this.db.query(query, [aluno, observacoes, documentos]);
+            await db.query(query, [aluno, observacoes, documentos]);
 
             const acompanhamento = new acompanhamentoPsicologico({
                 aluno,
@@ -31,7 +32,7 @@ class AcompanhamentoPsicologicoRepository {
     async obterAcompanhamentoPorId(id) {
         try {
             const query = 'SELECT * FROM acompanhamento_psicologico WHERE id = ?';
-            const result = await this.db.query(query, [id]);
+            const result = await db.query(query, [id]);
 
             console.log('Resultado da consulta:', result);
 
@@ -56,7 +57,7 @@ class AcompanhamentoPsicologicoRepository {
     async atualizarAcompanhamentoPsicologico(id, aluno, observacoes, documentos) {
         try {
             const query = 'UPDATE acompanhamento_psicologico SET aluno = ?, observacoes = ?, documentos = ? WHERE id = ?';
-            await this.db.query(query, [aluno, observacoes, documentos, id]);
+            await db.query(query, [aluno, observacoes, documentos, id]);
 
             console.log('Acompanhamento psicológico atualizado com sucesso.');
 
@@ -75,7 +76,7 @@ class AcompanhamentoPsicologicoRepository {
             const acompanhamentoExcluido = await this.obterAcompanhamentoPorId(id);
     
             const query = 'UPDATE acompanhamento_psicologico SET status = ?, versao = versao + 1 WHERE id = ?';
-            await this.db.query(query, ['excluido', id]);
+            await db.query(query, ['excluido', id]);
     
             console.log('Acompanhamento psicológico excluído com sucesso.');
             return acompanhamentoExcluido;

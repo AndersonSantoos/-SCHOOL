@@ -1,8 +1,9 @@
 const acompanhamentoFonoaudiologo = require("../models/fonoModel");
+const db = require("../db/dbConfig")
 
 class AcompanhamentoFonoRepository {
     constructor() {
-        this.db = require('../db/dbConfig');
+        
     }
 
     async registrarAcompanhamentoFonoaudiologo(aluno, observacoes, documentos) {
@@ -12,7 +13,7 @@ class AcompanhamentoFonoRepository {
             }
 
             const query = 'INSERT INTO acompanhamento_fonoaudiologo (aluno, observacoes, documentos) VALUES (?, ?, ?)';
-            await this.db.query(query, [aluno, observacoes, documentos]);
+            await db.query(query, [aluno, observacoes, documentos]);
 
             const acompanhamento = new acompanhamentoFonoaudiologo({
                 aluno,
@@ -33,9 +34,9 @@ class AcompanhamentoFonoRepository {
     async obterAcompanhamentoPorId(id) {
         try {
             const query = 'SELECT * FROM acompanhamento_fonoaudiologo WHERE id = ?';
-            const result = await this.db.query(query, [id]);
+            const result = await db.query(query, [id]);
     
-            console.log('Resultado da consulta:', result);
+            // console.log('Resultado da consulta:', result);
     
             if (result[0].length === 0) {
                 return null;
@@ -48,6 +49,7 @@ class AcompanhamentoFonoRepository {
                 acompanhamentoData.documentos
             );
     
+            // console.log("Resultado do acompanhamento:", acompanhamento)
             return acompanhamento;
         } catch (error) {
             console.error('Erro ao obter acompanhamento por ID:', error.message);
@@ -60,7 +62,7 @@ class AcompanhamentoFonoRepository {
     async atualizarAcompanhamentoFonoaudiologo(id, aluno, observacoes, documentos) {
         try {
             const query = 'UPDATE acompanhamento_fonoaudiologo SET aluno = ?, observacoes = ?, documentos = ? WHERE id = ?';
-            await this.db.query(query, [aluno, observacoes, documentos, id]);
+            await db.query(query, [aluno, observacoes, documentos, id]);
     
             console.log('Acompanhamento fonoaudiológico atualizado com sucesso.');
     
@@ -83,7 +85,7 @@ class AcompanhamentoFonoRepository {
             const acompanhamentoExcluido = await this.obterAcompanhamentoPorId(id);
     
             const query = 'UPDATE acompanhamento_fonoaudiologo SET status = ?, versao = versao + 1 WHERE id = ?';
-            await this.db.query(query, ['excluido', id]);
+            await db.query(query, ['excluido', id]);
     
             console.log('Acompanhamento fonoaudiológico excluído com sucesso.');
             return acompanhamentoExcluido;
@@ -91,13 +93,7 @@ class AcompanhamentoFonoRepository {
             console.error('Erro ao excluir acompanhamento por ID:', error.message);
             throw error;
         }
-    }
-    
-    
-    
-    
-    
-    
+    }  
 }   
 
 

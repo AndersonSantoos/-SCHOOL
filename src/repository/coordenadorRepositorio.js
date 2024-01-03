@@ -33,7 +33,7 @@ class AcompanhamentoCoordenadorRepository {
           const query = 'SELECT aluno, encaminhamento, profissional_encaminhado FROM acompanhamento_coordenador WHERE id = ?';
           const result = await db.query(query, [id]);
     
-          console.log('Resultado da consulta:', result);
+          // console.log('Resultado da consulta:', result);
     
           if (result[0].length === 0) {
             return null;
@@ -64,7 +64,7 @@ class AcompanhamentoCoordenadorRepository {
     
         try {
           const result = await db.query(query, [novoAluno, novoEncaminhamento, novoProfissionalEncaminhado, id]);
-          console.log('Resultado da atualização:', result);
+          // console.log('Resultado da atualização:', result);
     
           
           return result;
@@ -76,18 +76,16 @@ class AcompanhamentoCoordenadorRepository {
 
 
       async excluirAcompanhamento(id) {
-        const query = `
-          UPDATE acompanhamento_coordenador
-          SET status = 'excluido'
-          WHERE id = ? AND status = 'ativo';
-        `;
-    
+
         try {
-          const result = await db.query(query, [id]);
-          console.log('Resultado do soft delete:', result);
+
+          const acompanhamentoExcluido = await this.obterAcompanhamentoPorId(id);
+          const query = 'UPDATE acompanhamento_coordenador SET status = ?, versao = versao + 1 WHERE id = ?';
+          await db.query(query, ['excluido', id]);
+
+          // console.log('Resultado do soft delete:', acompanhamentoExcluido);
     
-          
-          return result;
+          return acompanhamentoExcluido;
         } catch (error) {
           console.error('Erro no soft delete do acompanhamento:', error.message);
           throw error;

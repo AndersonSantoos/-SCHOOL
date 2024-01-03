@@ -3,20 +3,20 @@ const router = express.Router();
 const AcompanhamentoPsicologicoController = require("../controllers/psicologoController"); 
 const acompanhamentoPsicologicoController = new AcompanhamentoPsicologicoController(); 
 
-router.post('/cadastrarPsicologico', (req, res) => {
-    acompanhamentoPsicologicoController.registrarAcompanhamentoPsicologico(req, res);
+router.post('/add_psicologico', async (req, res) => {
+    await acompanhamentoPsicologicoController.registrarAcompanhamentoPsicologico(req, res);
 });
 
-router.get('/infoPsicologico/:id', (req, res) => {
-    acompanhamentoPsicologicoController.obterAcompnhamentoPorId(req, res); // Corrigido o nome da função
+router.get('/info_psicologico/:id', async (req, res) => {
+    await acompanhamentoPsicologicoController.obterAcompnhamentoPorId(req, res); 
 });
 
-router.put('/atualizarPsicologico/:id', (req, res) => {
-    acompanhamentoPsicologicoController.atualizarAcompanhamentoPsicologico(req, res);
+router.put('/edit_psicologico/:id', async (req, res) => {
+    await acompanhamentoPsicologicoController.atualizarAcompanhamentoPsicologico(req, res);
 });
 
-router.delete('/excluirPsicologico/:id', (req, res) => {
-    acompanhamentoPsicologicoController.excluirAcompanhamentoPsicologico(req, res);
+router.delete('/excluir_psicologico/:id', async (req, res) => {
+    await acompanhamentoPsicologicoController.excluirAcompanhamentoPsicologico(req, res);
 });
 
 module.exports = router;
