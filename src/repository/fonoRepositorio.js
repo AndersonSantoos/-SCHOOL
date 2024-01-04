@@ -3,7 +3,6 @@ const db = require("../db/dbConfig")
 
 class AcompanhamentoFonoRepository {
     constructor() {
-        
     }
 
     async registrarAcompanhamentoFonoaudiologo(aluno, observacoes, documentos) {
@@ -94,6 +93,8 @@ class AcompanhamentoFonoRepository {
             throw error;
         }
     }  
+
+
 }   
 
 
