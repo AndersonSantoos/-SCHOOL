@@ -56,12 +56,12 @@ class MateriasRepositorio {
 
     async atualizarMateria(id, nome_materia) {
         try {
-            const query = 'UPDATE materias SET nome_materia = ? WHERE id = ?';
+            const query = 'UPDATE materias SET nome_materia = ? WHERE id_materia = ?';
             await db.query(query, [nome_materia, id]);
 
             console.log("Disciplina editada com sucesso.");
 
-            const disciplinaAtualizada = new materiasRepositorio(nome_materia);
+            const disciplinaAtualizada = new materiasModel(nome_materia);
             disciplinaAtualizada.id = id; 
 
             return disciplinaAtualizada;
