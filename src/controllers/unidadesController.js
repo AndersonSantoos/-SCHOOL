@@ -53,9 +53,9 @@ class unidadesController {
             }
 
             await this.UnidadesRepositorio.atualizarUnidade(id, nome_unidade);
-            return res.status(200).json({ message: "Unidade cadastrada com sucesso."});
+            return res.status(200).json({ message: "Unidade atualizada com sucesso."});
         } catch (error) {
-            console.error("Erro ao processar solicatação de atualização:", error);
+            console.error("Erro ao processar solicitação de atualização:", error);
             return res.status(500).json({ error: "Erro interno do servidor."});
         }
     }

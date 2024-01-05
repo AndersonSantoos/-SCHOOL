@@ -8,7 +8,7 @@ class unidadesRepositorio {
     async registrarUnidade(nome_unidade) {
         try {
             if(!nome_unidade) {
-                throw new Error("Todos os campos devem ser preenchidos");
+                throw new Error("Todos os campos devem ser preenchidos.");
             }
 
             const query = "INSERT INTO unidades (nome_unidade) VALUES (?)";

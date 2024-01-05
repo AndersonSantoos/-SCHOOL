@@ -9,7 +9,8 @@ const psicologico = require('./routes/psicologicoRouters');
 const notasRouters = require('./routes/notasRouters');
 const coordenadorRouters = require("./routes/coordenadorRouters");
 const materiasRouters = require("./routes/materiasRouters");
-const unidadesRouters = require("./routes/unidadesRouters");
+const unidadesRouters = require("./routes/unidadeRouters");
+const atividadeRouters = require("./routes/atividadeRouters");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -25,6 +26,7 @@ app.use('/', notasRouters);
 app.use('/', coordenadorRouters); 
 app.use('/', materiasRouters);
 app.use('/', unidadesRouters); 
+app.use('/', atividadeRouters);
 
 
 app.listen(port, () => {
