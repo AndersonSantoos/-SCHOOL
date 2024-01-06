@@ -16,43 +16,42 @@ class NotasController {
     }
   }
 
+
+
   async recuperarNotas(req, res) {
     try {
-      const params = req.query;
-      const notas = await notasRepository.recuperarNotas(params);
+        const idAluno = req.params.id; 
+        const notas = await notasRepository.recuperarNotas(idAluno);
 
-      res.status(200).json({ success: true, notas });
+        res.status(200).json({ success: true, notas });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, error: "Erro interno do servidor" });
+        console.error(error);
+        res.status(500).json({ success: false, error: "Erro interno do servidor" });
     }
+}
+
+
+
+
+async atualizarNota(req, res) {
+  try {
+    const { id } = req.params;
+    const { valorNota, idAtividade, idAluno } = req.body;
+    const novaNota = { valorNota, idAtividade, idAluno };
+
+    const notaAtualizada = await notasRepository.atualizarNota(id, novaNota);
+
+    res.status(200).json({ success: true, nota: notaAtualizada });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Erro interno do servidor" });
   }
-
-  async atualizarNota(req, res) {
-    try {
-      const { idNota } = req.params; // supondo que o ID da nota seja passado nos parâmetros da URL
-      const novaNota = req.body;
-
-      const atualizado = await notasRepository.atualizarNota(idNota, novaNota);
-
-      if (atualizado) {
-        res.status(200).json({ success: true, mensagem: "Nota atualizada com sucesso" });
-      } else {
-        res.status(404).json({ success: false, mensagem: "Nota não encontrada ou não atualizada" });
-      }
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, error: "Erro interno do servidor" });
-    }
-  }
+}
 
 
   async excluirNota(req, res) {
     try {
-      const { id } = req.params; // supondo que o ID da nota seja passado nos parâmetros da URL
-
-      // Antes de excluir a nota, você pode verificar se a atividade associada também deve ser excluída
-      // Exemplo: const excluirAtividade = req.query.excluirAtividade === 'true';
+      const { id } = req.params;
 
       const excluido = await notasRepository.excluirNota(id);
 

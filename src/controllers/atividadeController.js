@@ -8,13 +8,13 @@ class atividadeController {
 
     async registrarAtividade(req, res) {
         try {
-            const {nome_atividade, id_materia, id_unidade, computa_nota} = req.body;
+            const {nome_atividade, id_materia, id_unidade} = req.body;
 
-            if(!nome_atividade || !id_materia || !id_unidade || !computa_nota) {
+            if(!nome_atividade || !id_materia || !id_unidade) {
                 return res.status(404).json({ error: "Todos os campos são obrigatórios."});
         }
 
-        await this.AtividadeRepositorio.registrarAtividade(nome_atividade, id_materia, id_unidade, computa_nota);
+        await this.AtividadeRepositorio.registrarAtividade(nome_atividade, id_materia, id_unidade);
 
         return res.status(200).json({ error: "Atividade registrada com sucesso."});
     } catch (error) {
@@ -45,13 +45,13 @@ class atividadeController {
     async atualizarAtividade(req, res) {
         try {
             const id = req.params.id;
-            const {nome_atividade, id_materia, id_unidade, computa_nota} = req.body;
+            const {nome_atividade, id_materia, id_unidade} = req.body;
 
-            if(!nome_atividade || !id_materia || !id_unidade || !computa_nota) {
+            if(!nome_atividade || !id_materia || !id_unidade) {
                 return res.status(404).json({ error: "Todos os campos devem ser preenchidos."});
             }
 
-            await this.AtividadeRepositorio.atulizarAtividade(id, nome_atividade, id_materia, id_unidade, computa_nota);
+            await this.AtividadeRepositorio.atulizarAtividade(id, nome_atividade, id_materia, id_unidade);
             return res.status(200).json({ message: "Atividade atualizada com sucesso."});
         } catch (error) {
             console.error("Erro ao processar a solicitação:", error);

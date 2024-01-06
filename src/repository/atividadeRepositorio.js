@@ -7,20 +7,19 @@ class atividadeRepositorio {
     }
 
 
-    async registrarAtividade(nome_atividade, id_materia, id_unidade, computa_nota) {
+    async registrarAtividade(nome_atividade, id_materia, id_unidade) {
         try {
-            if(!nome_atividade || !id_materia || !id_unidade || !computa_nota) {
+            if(!nome_atividade || !id_materia || !id_unidade) {
                 throw new Error("Todos os campos devem ser preenchidos.")
             }
 
-            const query = "INSERT INTO atividades (nome_atividade, id_materia, id_unidade, computa_nota) VALUES (?, ?, ?, ?)";
-            await db.query(query, [nome_atividade, id_materia, id_unidade, computa_nota]);
+            const query = "INSERT INTO atividades (nome_atividade, id_materia, id_unidade) VALUES (?, ?, ?)";
+            await db.query(query, [nome_atividade, id_materia, id_unidade]);
 
             const atividade = new atividadeModel({
                 nome_atividade,
                 id_materia,
-                id_unidade,
-                computa_nota
+                id_unidade
             });
 
             console.log("Atividade cadastrada com sucesso.");
@@ -46,8 +45,7 @@ class atividadeRepositorio {
             const atividadeData = result[0][0];
             const atividade = new atividadeModel(atividadeData.nome_atividade,
                  atividadeData.id_materia,
-                 atividadeData.id_unidade,
-                 atividadeData.computa_nota
+                 atividadeData.id_unidade
                 );
 
             console.log("Resultado da inserção da unidade:", atividade);
@@ -59,14 +57,14 @@ class atividadeRepositorio {
     }
 
 
-    async atulizarAtividade(id, nome_atividade, id_materia, id_unidade, computa_nota) {
+    async atulizarAtividade(id, nome_atividade, id_materia, id_unidade) {
         try {
-          const query = "UPDATE atividades SET nome_atividade = ?, id_materia = ?, id_unidade = ?, computa_nota = ? WHERE id_atividade = ?";
+          const query = "UPDATE atividades SET nome_atividade = ?, id_materia = ?, id_unidade = ? WHERE id_atividade = ?";
           await db.query(query, [nome_atividade, id_materia, id_unidade, computa_nota, id]);
       
           console.log("Atividade editada com sucesso.");
       
-          const atividadeAtualizada = new atividadeModel(nome_atividade, id_materia, id_unidade, computa_nota);
+          const atividadeAtualizada = new atividadeModel(nome_atividade, id_materia, id_unidade);
           atividadeAtualizada.id = id;
       
           return atividadeAtualizada;

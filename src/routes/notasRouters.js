@@ -11,6 +11,7 @@ router.get("/info_notas/:id", async (req, res) => {
    await notasController.recuperarNotas(req, res)
 });
 
+
 router.put("/edit_notas/:id", async (req, res) => {
    await notasController.atualizarNota(req, res)
 });
