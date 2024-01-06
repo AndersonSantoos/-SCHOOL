@@ -41,6 +41,7 @@ class atividadeController {
         }
       }
 
+      
 
       async obterTodasAtividades(req, res) {
         try {
