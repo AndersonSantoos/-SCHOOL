@@ -24,5 +24,4 @@ router.delete("/excluir_atividade/:id", async (req, res) => {
     await AtividadeController.excluirAtividadePorId(req, res);
 });
 
-
 module.exports = router;
