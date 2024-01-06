@@ -39,6 +39,22 @@ class materiasController {
         }
 
 
+        async obterTodasMaterias(req, res) {
+            try {
+                const { page, pageSize } = req.query;
+                const pageNumber = parseInt(page, 10) || 1;
+                const pageSizeNumber = parseInt(pageSize, 10) || 10;
+    
+                const todasMateriasComPaginacao = await MateriasRepositorio.obterTodasMaterias(pageNumber, pageSizeNumber);
+    
+                return res.status(200).json(todasMateriasComPaginacao);
+            } catch (error) {
+                console.error('Erro ao obter todas as matérias:', error.message);
+                return res.status(500).json({ error: 'Erro interno do servidor.' });
+            }
+        }
+
+
 
         async atualizarMateria(req, res) {
             try {

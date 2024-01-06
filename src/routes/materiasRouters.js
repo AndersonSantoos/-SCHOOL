@@ -13,6 +13,10 @@ router.get("/info_materia/:id", async (req, res) => {
    await materiasController.obterMateriaPorId(req, res);
 });
 
+router.get('/todas_materias', async (req, res) => {
+   await MateriasController.obterTodasMaterias(req, res);
+});
+
 
 router.put("/edit_materia/:id", async (req, res) => {
    await materiasController.atualizarMateria(req, res);

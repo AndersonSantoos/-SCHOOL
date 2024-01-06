@@ -31,6 +31,22 @@ class NotasController {
 }
 
 
+async obterTodasNotas(req, res) {
+  try {
+    const { page, pageSize } = req.query;
+    const pageNumber = parseInt(page, 10) || 1;
+    const pageSizeNumber = parseInt(pageSize, 10) || 10;
+
+    const todasNotas = await notasRepository.obterTodasNotas(pageNumber, pageSizeNumber);
+
+    return res.status(200).json(todasNotas);
+  } catch (error) {
+    console.error('Erro ao obter todas as notas:', error.message);
+    return res.status(500).json({ error: 'Erro interno do servidor.' });
+  }
+}
+
+
 
 
 async atualizarNota(req, res) {

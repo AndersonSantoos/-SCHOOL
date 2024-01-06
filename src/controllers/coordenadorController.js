@@ -38,6 +38,24 @@ class AcompanhamentoCoordenadorController {
           return res.status(500).json({ error: 'Erro interno do servidor.' });
         }
       }
+
+
+      async obterTodosAcompanhamentos(req, res) {
+        try {
+            const { page, pageSize } = req.query;
+            const pageNumber = parseInt(page, 10) || 1;
+            const pageSizeNumber = parseInt(pageSize, 10) || 10;
+    
+            const acompanhamentosComPaginacao = await this.acompanhamentoCoordenadorRepository.obterTodosAcompanhamentos(pageNumber, pageSizeNumber);
+    
+            return res.status(200).json(acompanhamentosComPaginacao);
+        } catch (error) {
+            console.error('Erro ao obter todos os acompanhamentos:', error.message);
+            return res.status(500).json({ error: 'Erro interno do servidor.' });
+        }
+    }
+    
+    
     
 
       async atualizarAcompanhamento(req, res) {

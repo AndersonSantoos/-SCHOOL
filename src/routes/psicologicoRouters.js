@@ -11,6 +11,10 @@ router.get('/info_psicologico/:id', async (req, res) => {
     await acompanhamentoPsicologicoController.obterAcompnhamentoPorId(req, res); 
 });
 
+router.get("/todos_acompanhamentos_psicologicos", async (req, res) => {
+    await acompanhamentoPsicologicoController.obterTodosAcompanhamentosPsicologicos(req, res);
+});
+
 router.put('/edit_psicologico/:id', async (req, res) => {
     await acompanhamentoPsicologicoController.atualizarAcompanhamentoPsicologico(req, res);
 });

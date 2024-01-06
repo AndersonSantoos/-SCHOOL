@@ -55,7 +55,49 @@ class AcompanhamentoCoordenadorRepository {
 
 
 
-      async atualizarAcompanhamento(id, novoAluno, novoEncaminhamento, novoProfissionalEncaminhado) {
+      async obterTodosAcompanhamentos(pageNumber = 1, pageSize = 10) {
+        try {
+            const offset = (pageNumber - 1) * pageSize;
+            const query = 'SELECT * FROM acompanhamento_coordenador LIMIT ?, ?';
+            const result = await db.query(query, [offset, pageSize]);
+    
+            const acompanhamentos = result[0].map(acompanhamentoData => {
+                return new AcompanhamentoCoordenador(
+                    acompanhamentoData.aluno,
+                    acompanhamentoData.encaminhamento,
+                    acompanhamentoData.profissional_encaminhado
+                );
+            });
+    
+            // Verificar se há mais registros para a próxima página
+            const hasNextPage = acompanhamentos.length === pageSize;
+    
+            // Construir o objeto de resposta incluindo os links para a próxima e a página anterior
+            const response = {
+                acompanhamentos,
+                pagination: {
+                    currentPage: pageNumber,
+                    pageSize,
+                    hasNextPage,
+                    hasPreviousPage: pageNumber > 1,
+                    nextPage: hasNextPage ? `/todos_acompanhamentos?page=${pageNumber + 1}&pageSize=${pageSize}` : null,
+                    previousPage: pageNumber > 1 ? `/todos_acompanhamentos?page=${pageNumber - 1}&pageSize=${pageSize}` : null
+                }
+            };
+    
+            return response;
+        } catch (error) {
+            console.error('Erro ao obter todos os acompanhamentos:', error.message);
+            throw error;
+        }
+    }
+    
+    
+    
+
+
+
+      async atualizarAcompanhamento(id, aluno, encaminhamento, profissionalEncaminhado) {
         const query = `
           UPDATE acompanhamento_coordenador
           SET aluno = ?, encaminhamento = ?, profissional_encaminhado = ?
@@ -63,7 +105,7 @@ class AcompanhamentoCoordenadorRepository {
         `;
     
         try {
-          const result = await db.query(query, [novoAluno, novoEncaminhamento, novoProfissionalEncaminhado, id]);
+          const result = await db.query(query, [aluno, encaminhamento, profissionalEncaminhado, id]);
           // console.log('Resultado da atualização:', result);
     
           

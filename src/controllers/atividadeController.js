@@ -42,6 +42,21 @@ class atividadeController {
       }
 
 
+      async obterTodasAtividades(req, res) {
+        try {
+            const { page = 1, pageSize = 10 } = req.query;
+
+            const atividadeRepo = new atividadeRepositorio();
+            const result = await atividadeRepo.obterTodasAtividades(page, pageSize);
+
+            res.json(result);
+        } catch (error) {
+            console.error('Erro ao obter todas as atividades:', error.message);
+            res.status(500).json({ error: 'Erro interno do servidor' });
+        }
+    }
+
+
     async atualizarAtividade(req, res) {
         try {
             const id = req.params.id;

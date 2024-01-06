@@ -6,11 +6,15 @@ const AtividadeController = new atividadeController();
 
 router.post("/add_atividade", async (req, res) => {
     await AtividadeController.registrarAtividade(req, res);
-})
+});
 
 router.get("/info_atividade/:id", async (req, res) => {
     await AtividadeController.obterAtividadePorId(req, res);
-})
+});
+
+router.get('/atividades', async (req, res) => {
+    await atividadeController.obterTodasAtividades(req, res);
+});
 
 router.put("/edit_atividade/:id", async (req, res) => {
     await AtividadeController.atualizarAtividade(req, res);

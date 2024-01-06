@@ -38,6 +38,69 @@ class AcompanhamentoPsicologicoController {
         }
     }
 
+
+    async obterTodosAcompanhamentosPsicologicos(pageNumber = 1, pageSize = 10) {
+        try {
+            const offset = (pageNumber - 1) * pageSize;
+            const query = 'SELECT * FROM acompanhamento_psicologico LIMIT ?, ?';
+            const result = await db.query(query, [offset, pageSize]);
+
+            const acompanhamentos = result[0].map(acompanhamentoData => {
+                return new acompanhamentoPsicologicoModel(
+                    acompanhamentoData.aluno,
+                    acompanhamentoData.observacoes,
+                    acompanhamentoData.documentos
+                );
+            });
+
+            // Obter o número total de acompanhamentos
+            const totalAcompanhamentosQuery = 'SELECT COUNT(*) as total FROM acompanhamento_psicologico';
+            const totalAcompanhamentosResult = await db.query(totalAcompanhamentosQuery);
+            const totalAcompanhamentos = totalAcompanhamentosResult[0][0].total;
+
+            // Calcular o número total de páginas
+            const totalPages = Math.ceil(totalAcompanhamentos / pageSize);
+
+            // Construir o objeto de resposta incluindo os links para a próxima e a página anterior
+            const response = {
+                acompanhamentos,
+                pagination: {
+                    currentPage: pageNumber,
+                    pageSize,
+                    totalItems: totalAcompanhamentos,
+                    totalPages,
+                    hasNextPage: pageNumber < totalPages,
+                    hasPreviousPage: pageNumber > 1,
+                    nextPage: pageNumber < totalPages ? `/todos_acompanhamentos_psicologicos?page=${pageNumber + 1}&pageSize=${pageSize}` : null,
+                    previousPage: pageNumber > 1 ? `/todos_acompanhamentos_psicologicos?page=${pageNumber - 1}&pageSize=${pageSize}` : null
+                }
+            };
+
+            return response;
+        } catch (error) {
+            console.error('Erro ao obter todos os acompanhamentos psicológicos:', error.message);
+            throw error;
+        }
+    }
+
+
+    async obterTodosAcompanhamentosPsicologicos(req, res) {
+        try {
+            const { page, pageSize } = req.query;
+            const pageNumber = parseInt(page, 10) || 1;
+            const pageSizeNumber = parseInt(pageSize, 10) || 10;
+
+            const acompanhamentosComPaginacao = await this.acompanhamentoPsicologicoRepository.obterTodosAcompanhamentosPsicologicos(pageNumber, pageSizeNumber);
+
+            return res.status(200).json(acompanhamentosComPaginacao);
+        } catch (error) {
+            console.error('Erro ao obter todos os acompanhamentos psicológicos:', error.message);
+            return res.status(500).json({ error: 'Erro interno do servidor.' });
+        }
+    }
+
+    
+
     async atualizarAcompanhamentoPsicologico(req, res) {
         try {
             const id = req.params.id;

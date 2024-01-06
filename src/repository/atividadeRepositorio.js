@@ -57,6 +57,48 @@ class atividadeRepositorio {
     }
 
 
+    async obterTodasAtividades(pageNumber = 1, pageSize = 10) {
+        try {
+            const offset = (pageNumber - 1) * pageSize;
+            const query = 'SELECT * FROM atividades LIMIT ?, ?';
+            const result = await db.query(query, [offset, pageSize]);
+
+            const atividades = result[0].map(atividadeData => {
+                return new atividadeModel(
+                    atividadeData.nome_atividade,
+                    atividadeData.id_materia,
+                    atividadeData.id_unidade
+                );
+            });
+
+            const totalAtividadesQuery = 'SELECT COUNT(*) as total FROM atividades';
+            const totalAtividadesResult = await db.query(totalAtividadesQuery);
+            const totalAtividades = totalAtividadesResult[0][0].total;
+
+            const totalPages = Math.ceil(totalAtividades / pageSize);
+
+            const response = {
+                atividades,
+                pagination: {
+                    currentPage: pageNumber,
+                    pageSize,
+                    totalItems: totalAtividades,
+                    totalPages,
+                    hasNextPage: pageNumber < totalPages,
+                    hasPreviousPage: pageNumber > 1,
+                    nextPage: pageNumber < totalPages ? `/atividades?page=${pageNumber + 1}&pageSize=${pageSize}` : null,
+                    previousPage: pageNumber > 1 ? `/atividades?page=${pageNumber - 1}&pageSize=${pageSize}` : null
+                }
+            };
+
+            return response;
+        } catch (error) {
+            console.error('Erro ao obter todas as atividades:', error.message);
+            throw error;
+        }
+    }
+
+
     async atulizarAtividade(id, nome_atividade, id_materia, id_unidade) {
         try {
           const query = "UPDATE atividades SET nome_atividade = ?, id_materia = ?, id_unidade = ? WHERE id_atividade = ?";

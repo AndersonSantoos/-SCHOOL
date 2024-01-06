@@ -14,6 +14,11 @@ router.get("/info_unidade/:id", async (req, res) => {
 });
 
 
+router.get("/todas_unidades", async (req, res) => {
+    await unidadesController.obterTodasUnidades(req, res);
+});
+
+
 router.put("/edit_unidade/:id", async (req, res) => {
     await UnidadesController.atualizarUnidade(req, res); //
 });

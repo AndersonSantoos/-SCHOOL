@@ -13,6 +13,12 @@ router.get('/info_fono/:id', async (req, res) => {
     await acompanhamentoFonoController.obterAcompanhamentoPorId(req, res);
 });
 
+
+router.get('/todos_acompanhamentos_fonoaudiologicos', async (req, res) => {
+    await acompanhamentoFonoController.obterTodosAcompanhamentosFonoaudiologicos(req, res);
+});
+
+
 router.put('/edit_fono/:id', async (req, res) => {
     await acompanhamentoFonoController.atualizarAcompanhamento(req, res);
 });

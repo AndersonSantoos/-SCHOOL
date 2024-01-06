@@ -43,6 +43,22 @@ class unidadesController {
     }
 
 
+    async obterTodasUnidades(req, res) {
+        try {
+            const { page, pageSize } = req.query;
+            const pageNumber = parseInt(page, 10) || 1;
+            const pageSizeNumber = parseInt(pageSize, 10) || 10;
+
+            const unidadesComPaginacao = await unidadesRepositorio.obterTodasUnidades(pageNumber, pageSizeNumber);
+
+            return res.status(200).json(unidadesComPaginacao);
+        } catch (error) {
+            console.error('Erro ao obter todas as unidades:', error.message);
+            return res.status(500).json({ error: 'Erro interno do servidor.' });
+        }
+    }
+
+
     async atualizarUnidade(req, res) {
         try {
             const id = req.params.id;

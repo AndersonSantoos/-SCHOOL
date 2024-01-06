@@ -50,6 +50,48 @@ class unidadesRepositorio {
     }
 
 
+    async obterTodasUnidades(pageNumber = 1, pageSize = 10) {
+        try {
+            const offset = (pageNumber - 1) * pageSize;
+            const query = "SELECT * FROM unidades LIMIT ?, ?";
+            const result = await db.query(query, [offset, pageSize]);
+    
+            const unidades = result[0].map(unidadeData => {
+                return new unidadesModel(unidadeData.nome_unidade);
+            });
+    
+            // Obter o número total de unidades
+            const totalUnidadesQuery = "SELECT COUNT(*) as total FROM unidades";
+            const totalUnidadesResult = await db.query(totalUnidadesQuery);
+            const totalUnidades = totalUnidadesResult[0][0].total;
+    
+            // Calcular o número total de páginas
+            const totalPages = Math.ceil(totalUnidades / pageSize);
+    
+            // Construir o objeto de resposta incluindo os links para a próxima e a página anterior
+            const response = {
+                unidades,
+                pagination: {
+                    currentPage: pageNumber,
+                    pageSize,
+                    totalItems: totalUnidades,
+                    totalPages,
+                    hasNextPage: pageNumber < totalPages,
+                    hasPreviousPage: pageNumber > 1,
+                    nextPage: pageNumber < totalPages ? `/todas_unidades?page=${pageNumber + 1}&pageSize=${pageSize}` : null,
+                    previousPage: pageNumber > 1 ? `/todas_unidades?page=${pageNumber - 1}&pageSize=${pageSize}` : null
+                }
+            };
+    
+            return response;
+        } catch (error) {
+            console.error("Erro ao obter todas as unidades:", error.message);
+            throw error;
+        }
+    }
+    
+
+
     async atualizarUnidade(id, nome_unidade) {
         try {
             const query = "UPDATE unidades SET nome_unidade = ? WHERE id_unidade = ?";

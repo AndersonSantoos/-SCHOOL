@@ -18,11 +18,6 @@ class NotasRepository {
   }
 
 
-
-
-
-  
-
   async recuperarNotas(idAluno) {
     try {
         const query = "SELECT * FROM notas WHERE id_aluno = ?";
@@ -47,6 +42,51 @@ class NotasRepository {
         console.error('Erro ao obter notas por ID de aluno:', error.message);
         throw error;
     }
+}
+
+
+async obterTodasNotas(pageNumber = 1, pageSize = 10) {
+  try {
+    const offset = (pageNumber - 1) * pageSize;
+    const query = 'SELECT * FROM notas LIMIT ?, ?';
+    const result = await db.execute(query, [offset, pageSize]);
+
+    const notas = result[0].map(notaData => {
+      return new NotasModel(
+        parseFloat(notaData.valor_nota.toFixed(2)), // Arredonda para duas casas decimais
+        notaData.id_atividade,
+        notaData.id_aluno
+      );
+    });
+
+    // Obter o número total de notas
+    const totalNotasQuery = 'SELECT COUNT(*) as total FROM notas';
+    const totalNotasResult = await db.execute(totalNotasQuery);
+    const totalNotas = totalNotasResult[0][0].total;
+
+    // Calcular o número total de páginas
+    const totalPages = Math.ceil(totalNotas / pageSize);
+
+    // Construir o objeto de resposta incluindo os links para a próxima e a página anterior
+    const response = {
+      notas,
+      pagination: {
+        currentPage: pageNumber,
+        pageSize,
+        totalItems: totalNotas,
+        totalPages,
+        hasNextPage: pageNumber < totalPages,
+        hasPreviousPage: pageNumber > 1,
+        nextPage: pageNumber < totalPages ? `/todas_notas?page=${pageNumber + 1}&pageSize=${pageSize}` : null,
+        previousPage: pageNumber > 1 ? `/todas_notas?page=${pageNumber - 1}&pageSize=${pageSize}` : null
+      }
+    };
+
+    return response;
+  } catch (error) {
+    console.error('Erro ao obter todas as notas:', error.message);
+    throw error;
+  }
 }
 
 

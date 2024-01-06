@@ -50,6 +50,47 @@ class MateriasRepositorio {
             throw error;
         }
     }
+
+
+    async obterTodasMaterias(pageNumber = 1, pageSize = 10) {
+        try {
+            const offset = (pageNumber - 1) * pageSize;
+            const query = 'SELECT * FROM materias LIMIT ?, ?';
+            const result = await db.query(query, [offset, pageSize]);
+
+            const materias = result[0].map(materiaData => {
+                return new MateriasModel(materiaData.nome_materia);
+            });
+
+            // Obter o número total de matérias
+            const totalMateriasQuery = 'SELECT COUNT(*) as total FROM materias';
+            const totalMateriasResult = await db.query(totalMateriasQuery);
+            const totalMaterias = totalMateriasResult[0][0].total;
+
+            // Calcular o número total de páginas
+            const totalPages = Math.ceil(totalMaterias / pageSize);
+
+            // Construir o objeto de resposta incluindo os links para a próxima e a página anterior
+            const response = {
+                materias,
+                pagination: {
+                    currentPage: pageNumber,
+                    pageSize,
+                    totalItems: totalMaterias,
+                    totalPages,
+                    hasNextPage: pageNumber < totalPages,
+                    hasPreviousPage: pageNumber > 1,
+                    nextPage: pageNumber < totalPages ? `/todas_materias?page=${pageNumber + 1}&pageSize=${pageSize}` : null,
+                    previousPage: pageNumber > 1 ? `/todas_materias?page=${pageNumber - 1}&pageSize=${pageSize}` : null
+                }
+            };
+
+            return response;
+        } catch (error) {
+            console.error('Erro ao obter todas as matérias:', error.message);
+            throw error;
+        }
+    }
     
 
 
@@ -83,7 +124,7 @@ class MateriasRepositorio {
             }
     
             // Realiza a exclusão da matéria
-            const query = 'DELETE FROM materias WHERE id = ?';
+            const query = 'DELETE FROM materias WHERE id_materia = ?';
             await db.query(query, [id]);
     
             console.log('Matéria excluída com sucesso.');
