@@ -99,6 +99,7 @@ class atividadeRepositorio {
     }
 
 
+    
     async atulizarAtividade(id, nome_atividade, id_materia, id_unidade) {
         try {
           const query = "UPDATE atividades SET nome_atividade = ?, id_materia = ?, id_unidade = ? WHERE id_atividade = ?";
