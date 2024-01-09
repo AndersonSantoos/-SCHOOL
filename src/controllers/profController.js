@@ -129,24 +129,61 @@ class AcompanhamentoController {
             return res.status(500).json({ error: 'Erro interno do servidor.' });
         }
     }
+
+
+
+    async obterHistoricoAcompanhamento(req, res) {
+        const { id } = req.params;
+
+        try {
+            const historico = await this.acompanhamentoRepository.obterHistoricoAcompanhamento(id);
+
+            if (historico) {
+                res.status(200).json({ success: true, data: historico });
+            } else {
+                res.status(404).json({ success: false, message: 'Histórico de acompanhamento não encontrado' });
+            }
+        } catch (error) {
+            console.error('Erro ao obter histórico de acompanhamento:', error);
+            res.status(500).json({ success: false, message: 'Erro interno no servidor' });
+        }
+    }
+
+
+    async obterUltimaVersaoAcompanhamento(req, res) {
+        const { id } = req.params;
+
+        try {
+            const ultimaVersao = await this.acompanhamentoRepository.obterUltimaVersaoAcompanhamento(id);
+
+            if (ultimaVersao) {
+                res.status(200).json({ success: true, data: ultimaVersao });
+            } else {
+                res.status(404).json({ success: false, message: 'Última versão de acompanhamento não encontrada' });
+            }
+        } catch (error) {
+            console.error('Erro ao obter última versão de acompanhamento:', error);
+            res.status(500).json({ success: false, message: 'Erro interno no servidor' });
+        }
+    }
       
     
     
 
     async excluirAcompanhamento(req, res) {
+        const { id } = req.params;
+
         try {
-            const { id } = req.params;
-    
-            const resultadoExclusao = await this.acompanhamentoRepository.excluirAcompanhamento(id);
-    
-            if (resultadoExclusao) {
-                return res.status(200).json({ message: 'Acompanhamento excluído com sucesso.' });
+            const sucessoExclusao = await this.acompanhamentoRepository.excluirAcompanhamento(id);
+
+            if (sucessoExclusao) {
+                res.status(200).json({ success: true, message: 'Acompanhamento excluído com sucesso.' });
             } else {
-                return res.status(404).json({ error: 'Acompanhamento não encontrado.' });
+                res.status(404).json({ success: false, message: 'Acompanhamento não encontrado' });
             }
         } catch (error) {
-            console.error('Erro ao processar solicitação de exclusão do acompanhamento:', error);
-            return res.status(500).json({ error: 'Erro interno do servidor.' });
+            console.error('Erro ao excluir acompanhamento:', error);
+            res.status(500).json({ success: false, message: 'Erro interno no servidor' });
         }
     }
 

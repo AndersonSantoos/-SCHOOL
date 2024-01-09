@@ -80,19 +80,46 @@ class AcompanhamentoFonoController {
         }
     }
 
-    async excluirAcompanhamento(req, res) {
+    async obterHistoricoAcompanhamentoFono(id) {
         try {
-            const id = req.params.id;
-            const resultadoExclusao = await this.acompanhamentoFonoRepository.excluirAcompanhamentoFonoaudiologo(id);
+            const query = 'SELECT id, aluno, observacoes, documentos, status, versao FROM historico_acompanhamento_fono WHERE acompanhamento_id = ?';
+            const historico = await db.query(query, [id]);
     
-            if (resultadoExclusao) {
-                return res.status(200).json({ message: 'Acompanhamento fonoaudiológico excluído com sucesso.' });
+            return historico[0];
+        } catch (error) {
+            console.error('Erro ao obter histórico de acompanhamento (fono):', error.message);
+            throw error;
+        }
+    }
+
+
+    async  obterUltimaVersaoAcompanhamentoController(id) {
+        try {
+            const query = 'SELECT * FROM historico_acompanhamento_fono WHERE acompanhamento_id = ? ORDER BY versao DESC LIMIT 1';
+            const [ultimaVersao] = await db.query(query, [id]);
+    
+            return ultimaVersao[0];
+        } catch (error) {
+            console.error('Erro ao obter última versão de acompanhamento:', error.message);
+            throw error;
+        }
+    }
+
+    
+
+    async excluirAcompanhamentoFonoaudiologoController(req, res) {
+        const id = req.params.id;
+    
+        try {
+            const acompanhamentoExcluido = await this.acompanhamentoFonoRepository.excluirAcompanhamentoFonoaudiologo(id);
+    
+            if (acompanhamentoExcluido) {
+                res.json({ message: 'Acompanhamento fonoaudiológico excluído com sucesso.' });
             } else {
-                return res.status(404).json({ error: 'Acompanhamento fonoaudiológico não encontrado.' });
+                res.status(404).json({ error: 'Acompanhamento fonoaudiológico não encontrado.' });
             }
         } catch (error) {
-            console.error('Erro ao processar solicitação de exclusão:', error);
-            return res.status(500).json({ error: 'Erro interno do servidor.' });
+            res.status(500).json({ error: 'Erro ao excluir acompanhamento fonoaudiológico.' });
         }
     }
     

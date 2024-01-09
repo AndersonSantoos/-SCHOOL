@@ -32,7 +32,7 @@ class NotasRepository {
 
         const notasData = result[0];
         const nota = new NotasModel(
-            parseFloat(notasData.valor_nota.toFixed(2)), // Arredonda para duas casas decimais
+            parseFloat(notasData.valor_nota.toFixed(2)), 
             notasData.id_atividade,
             notasData.id_aluno
         );
@@ -53,7 +53,7 @@ async obterTodasNotas(pageNumber = 1, pageSize = 10) {
 
     const notas = result[0].map(notaData => {
       return new NotasModel(
-        parseFloat(notaData.valor_nota.toFixed(2)), // Arredonda para duas casas decimais
+        parseFloat(notaData.valor_nota.toFixed(2)), 
         notaData.id_atividade,
         notaData.id_aluno
       );

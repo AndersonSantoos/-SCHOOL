@@ -140,7 +140,7 @@ class AcompanhamentoRepository {
 
     async recuperarAcompanhamento(id) {
         try {
-            const query = 'SELECT * FROM eventos_acompanhamento WHERE id = ? AND status != ?';
+            const query = 'SELECT id, aluno, tipo_evento, descricao, relato, visao_geral, status, versao FROM eventos_acompanhamento WHERE id = ? AND status != ?';
             const [acompanhamento] = await db.query(query, [id, 'excluido']);
     
             return acompanhamento[0];
@@ -197,19 +197,52 @@ class AcompanhamentoRepository {
             throw error;
         }
     }
-    
+
+
+
+    async obterHistoricoAcompanhamento(id) {
+        try {
+            const query = 'SELECT id, aluno, tipo_evento, descricao, relato, visao_geral, status, versao FROM historico_acompanhamento_prof WHERE acompanhamento_id = ?';
+            const historico = await db.query(query, [id]);
+
+            return historico[0];
+        } catch (error) {
+            console.error('Erro ao obter histórico de acompanhamento:', error.message);
+            throw error;
+        }
+    }
+
+    async obterUltimaVersaoAcompanhamento(id) {
+        try {
+            const query = 'SELECT * FROM historico_acompanhamento_prof WHERE acompanhamento_id = ? ORDER BY versao DESC LIMIT 1';
+            const [ultimaVersao] = await db.query(query, [id]);
+
+            return ultimaVersao[0];
+        } catch (error) {
+            console.error('Erro ao obter última versão de acompanhamento:', error.message);
+            throw error;
+        }
+    }
 
     async excluirAcompanhamento(id) {
         try {
             const acompanhamentoExcluido = await this.recuperarAcompanhamento(id);
-    
+
             if (!acompanhamentoExcluido) {
-                return false; // Acompanhamento não encontrado, retorna false ou lança uma exceção, conforme preferir
+                return false;
             }
-            
+
+            const { aluno, tipoEvento, descricao, relato, visaoGeral, status, versao } = acompanhamentoExcluido;
+
+            // Salvar cópia na tabela de histórico
+            const historicoQuery = 'INSERT INTO historico_acompanhamento_prof (acompanhamento_id, aluno, tipo_evento, descricao, relato, visao_geral, status, versao) SELECT id, aluno, tipo_evento, descricao, relato, visao_geral, status, versao FROM eventos_acompanhamento WHERE id = ?';
+            await db.query(historicoQuery, [id]);
+
+
+            // Atualizar versão e marcar como excluído
             const query = 'UPDATE eventos_acompanhamento SET status = ?, versao = versao + 1 WHERE id = ?';
             await db.query(query, ['excluido', id]);
-    
+
             console.log('Acompanhamento excluído com sucesso.');
             return true;
         } catch (error) {
@@ -217,6 +250,7 @@ class AcompanhamentoRepository {
             throw error;
         }
     }
+    
 }
 
 module.exports = AcompanhamentoRepository;
