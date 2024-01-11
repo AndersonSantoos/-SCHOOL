@@ -3,24 +3,22 @@ const db = require("../db/dbConfig");
 
 class AcompanhamentoPsicologicoRepository {
     constructor() {
-        
     }
 
-    async registrarAcompanhamentoPsicologico(aluno, observacoes, documentos) {
+    async registrarAcompanhamentoPsicologico(matriculaAluno, aluno, observacoes, documentos) {
         try {
-            if (!aluno || !observacoes || !documentos) {
+            if (!matriculaAluno || !aluno || !observacoes || !documentos) {
                 throw new Error('Todos os campos devem ser preenchidos.');
             }
-
-            const query = 'INSERT INTO acompanhamento_psicologico (aluno, observacoes, documentos) VALUES (?, ?, ?)';
-            await db.query(query, [aluno, observacoes, documentos]);
-
+            const query = 'INSERT INTO acompanhamento_psicologico (matricula_aluno, aluno, observacoes, documentos) VALUES (?, ?, ?, ?)';
+            await db.query(query, [matriculaAluno, aluno, observacoes, documentos]);
+    
             const acompanhamento = new acompanhamentoPsicologico({
-                aluno,
-                observacoes,
-                documentos
+                matriculaAluno,
+                aluno: observacoes,
+                observacoes: documentos,
+                documentos: aluno
             });
-
             console.log('Acompanhamento psicológico cadastrado com sucesso.');
             return acompanhamento;
         } catch (error) {
@@ -34,7 +32,7 @@ class AcompanhamentoPsicologicoRepository {
             const query = 'SELECT * FROM acompanhamento_psicologico WHERE id = ?';
             const result = await db.query(query, [id]);
 
-            console.log('Resultado da consulta:', result);
+            // console.log('Resultado da consulta:', result);
 
             if (result[0].length === 0) {
                 return null;
@@ -42,6 +40,7 @@ class AcompanhamentoPsicologicoRepository {
 
             const acompanhamentoData = result[0][0];
             const acompanhamento = new acompanhamentoPsicologico(
+                acompanhamentoData.matricula_aluno,
                 acompanhamentoData.aluno,
                 acompanhamentoData.observacoes,
                 acompanhamentoData.documentos
@@ -54,7 +53,6 @@ class AcompanhamentoPsicologicoRepository {
         }
     }
 
-
     async obterTodosAcompanhamentosPsicologicos(pageNumber = 1, pageSize = 10) {
         try {
             const offset = (pageNumber - 1) * pageSize;
@@ -62,22 +60,18 @@ class AcompanhamentoPsicologicoRepository {
             const result = await db.query(query, [offset, pageSize]);
 
             const acompanhamentos = result[0].map(acompanhamentoData => {
-                return new acompanhamentoPsicologicoModel(
+                return new acompanhamentoPsicologico(
+                    acompanhamentoData.matricula_aluno,
                     acompanhamentoData.aluno,
                     acompanhamentoData.observacoes,
                     acompanhamentoData.documentos
                 );
             });
-
-            // Obter o número total de acompanhamentos
             const totalAcompanhamentosQuery = 'SELECT COUNT(*) as total FROM acompanhamento_psicologico';
             const totalAcompanhamentosResult = await db.query(totalAcompanhamentosQuery);
             const totalAcompanhamentos = totalAcompanhamentosResult[0][0].total;
-
-            // Calcular o número total de páginas
             const totalPages = Math.ceil(totalAcompanhamentos / pageSize);
 
-            // Construir o objeto de resposta incluindo os links para a próxima e a página anterior
             const response = {
                 acompanhamentos,
                 pagination: {
@@ -91,24 +85,20 @@ class AcompanhamentoPsicologicoRepository {
                     previousPage: pageNumber > 1 ? `/todos_acompanhamentos_psicologicos?page=${pageNumber - 1}&pageSize=${pageSize}` : null
                 }
             };
-
             return response;
         } catch (error) {
             console.error('Erro ao obter todos os acompanhamentos psicológicos:', error.message);
             throw error;
         }
     }
-
-    
-
-    async atualizarAcompanhamentoPsicologico(id, aluno, observacoes, documentos) {
+    async atualizarAcompanhamentoPsicologico(id, matriculaAluno, aluno, observacoes, documentos) {
         try {
-            const query = 'UPDATE acompanhamento_psicologico SET aluno = ?, observacoes = ?, documentos = ? WHERE id = ?';
-            await db.query(query, [aluno, observacoes, documentos, id]);
+            const query = 'UPDATE acompanhamento_psicologico SET matricula_aluno = ?, aluno = ?, observacoes = ?, documentos = ? WHERE id = ?';
+            await db.query(query, [matriculaAluno, aluno, observacoes, documentos, id]);
 
             console.log('Acompanhamento psicológico atualizado com sucesso.');
 
-            const acompanhamentoAtualizado = new acompanhamentoPsicologico(aluno, observacoes, documentos);
+            const acompanhamentoAtualizado = new acompanhamentoPsicologico(matriculaAluno, aluno, observacoes, documentos);
             acompanhamentoAtualizado.id = id;
 
             return acompanhamentoAtualizado;
@@ -131,8 +121,7 @@ class AcompanhamentoPsicologicoRepository {
             console.error('Erro ao excluir acompanhamento por ID:', error.message);
             throw error;
         }
-    }
-    
+    }  
 }
 
 module.exports = AcompanhamentoPsicologicoRepository;

@@ -7,20 +7,19 @@ class AcompanhamentoPsicologicoController {
 
     async registrarAcompanhamentoPsicologico(req, res) {
         try {
-            const { aluno, observacoes, documentos } = req.body;
+            const {matriculaAluno, aluno, observacoes, documentos } = req.body;
 
-            if(!aluno || !observacoes || !documentos) {
+            if(!matriculaAluno || !aluno || !observacoes || !documentos) {
                 return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
             }
 
-            await this.acompanhamentoPsicologicoRepository.registrarAcompanhamentoPsicologico(aluno, observacoes, documentos);
+            await this.acompanhamentoPsicologicoRepository.registrarAcompanhamentoPsicologico(matriculaAluno, aluno, observacoes, documentos);
             return res.status(200).json({ message: 'Acompanhamento psicologico registrado com sucesso.' });
         } catch (error) {
             console.log("Erro ao processar a solicitação" + error);
             return res.status(500).json({ error: 'Erro interno do servidor.' });
         }
     }
-
 
     async obterAcompnhamentoPorId(req, res) {
         const id = req.params.id;
@@ -38,7 +37,6 @@ class AcompanhamentoPsicologicoController {
         }
     }
 
-
     async obterTodosAcompanhamentosPsicologicos(pageNumber = 1, pageSize = 10) {
         try {
             const offset = (pageNumber - 1) * pageSize;
@@ -47,6 +45,7 @@ class AcompanhamentoPsicologicoController {
 
             const acompanhamentos = result[0].map(acompanhamentoData => {
                 return new acompanhamentoPsicologicoModel(
+                    acompanhamentoData.matricula_aluno,
                     acompanhamentoData.aluno,
                     acompanhamentoData.observacoes,
                     acompanhamentoData.documentos
@@ -58,10 +57,7 @@ class AcompanhamentoPsicologicoController {
             const totalAcompanhamentosResult = await db.query(totalAcompanhamentosQuery);
             const totalAcompanhamentos = totalAcompanhamentosResult[0][0].total;
 
-            // Calcular o número total de páginas
             const totalPages = Math.ceil(totalAcompanhamentos / pageSize);
-
-            // Construir o objeto de resposta incluindo os links para a próxima e a página anterior
             const response = {
                 acompanhamentos,
                 pagination: {
@@ -75,15 +71,13 @@ class AcompanhamentoPsicologicoController {
                     previousPage: pageNumber > 1 ? `/todos_acompanhamentos_psicologicos?page=${pageNumber - 1}&pageSize=${pageSize}` : null
                 }
             };
-
             return response;
         } catch (error) {
             console.error('Erro ao obter todos os acompanhamentos psicológicos:', error.message);
             throw error;
         }
     }
-
-
+    
     async obterTodosAcompanhamentosPsicologicos(req, res) {
         try {
             const { page, pageSize } = req.query;
@@ -98,19 +92,17 @@ class AcompanhamentoPsicologicoController {
             return res.status(500).json({ error: 'Erro interno do servidor.' });
         }
     }
-
     
-
     async atualizarAcompanhamentoPsicologico(req, res) {
         try {
             const id = req.params.id;
-            const { aluno, observacoes, documentos } = req.body;
+            const { matriculaAluno, aluno, observacoes, documentos } = req.body;
 
-            if(!aluno || !observacoes || !documentos) {
+            if(!matriculaAluno || !aluno || !observacoes || !documentos) {
                 return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
             }
 
-            await this.acompanhamentoPsicologicoRepository.atualizarAcompanhamentoPsicologico(id, aluno, observacoes, documentos);
+            await this.acompanhamentoPsicologicoRepository.atualizarAcompanhamentoPsicologico(id, matriculaAluno, aluno, observacoes, documentos);
             return res.status(200).json({ message: 'Acompanhamento psicologico atualizado com sucesso.' });
         } catch (error) {
             console.error('Erro ao processar solicitação de atualização:', error);

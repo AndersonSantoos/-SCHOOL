@@ -93,8 +93,6 @@ class AcompanhamentoFonoController {
         }
     }
     
-    
-
     async obterTodosHistoricosAcompanhamentoFono(req, res) {
         try {
             const { page, pageSize } = req.query;
