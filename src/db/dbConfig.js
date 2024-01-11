@@ -8,7 +8,7 @@ const dbConfig = {
     database: process.env.DB_DATABASE,
 };
 
-// Criar uma conexão com suporte a promessas
+// Criar uma conexão com suporte a promessas promessas
 const db = mysql.createConnection(dbConfig).promise();
 
 // Tentar conectar ao banco de dados
