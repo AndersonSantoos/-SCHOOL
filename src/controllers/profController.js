@@ -14,7 +14,6 @@ class AcompanhamentoController {
             }
 
             let registrarEventoFunction;
-
             switch (tipoEvento.toLowerCase()) {
                 case 'briga':
                 case 'rendimento abaixo':
@@ -58,7 +57,6 @@ class AcompanhamentoController {
         }
     }
     
-
     async obterRelatorio(req, res) {
         try {
           const relatorio = await this.acompanhamentoRepository.obterRelatorio();
@@ -69,37 +67,30 @@ class AcompanhamentoController {
         }
       }
 
-
-
       async atualizarAcompanhamento(req, res) {
         try {
-            const { id, descricao, relato, visaoGeral, aluno, tipoEvento } = req.body;
+            const { id, matriculaAluno, descricao, relato, visaoGeral, aluno, tipoEvento } = req.body;
     
-            if (!id || !descricao) {
+            if (!id || !matriculaAluno || !descricao) {
                 return res.status(400).json({ success: false, message: 'Os campos "id" e "descricao" são obrigatórios.' });
             }
-    
             const acompanhamentoAtualizado = await this.acompanhamentoRepository.atualizarAcompanhamento(id, {
+                matriculaAluno,
                 descricao,
                 relato,
                 visaoGeral: visaoGeral, 
                 aluno,
                 tipoEvento, 
             });
-    
             res.status(200).json({ success: true, message: 'Acompanhamento atualizado com sucesso.', data: acompanhamentoAtualizado });
         } catch (error) {
             console.error(error);
             res.status(500).json({ success: false, message: 'Erro ao atualizar o acompanhamento.' });
         }
     }
-    
-
-    
 
     async recuperarAcompanhamento(req, res) {
         const { id } = req.params;
-
         try {
             const acompanhamento = await this.acompanhamentoRepository.recuperarAcompanhamento(id);
 
@@ -114,15 +105,12 @@ class AcompanhamentoController {
         }
     }
 
-
     async obterTodosAcompanhamentos(req, res) {
         try {
             const { page, pageSize } = req.query;
             const pageNumber = parseInt(page, 10) || 1;
             const pageSizeNumber = parseInt(pageSize, 10) || 10;
-
             const acompanhamentosComPaginacao = await this.acompanhamentoRepository.obterTodosAcompanhamentos(pageNumber, pageSizeNumber);
-
             return res.status(200).json(acompanhamentosComPaginacao);
         } catch (error) {
             console.error('Erro ao obter todos os acompanhamentos:', error.message);
@@ -134,10 +122,8 @@ class AcompanhamentoController {
 
     async obterHistoricoAcompanhamento(req, res) {
         const { id } = req.params;
-
         try {
             const historico = await this.acompanhamentoRepository.obterHistoricoAcompanhamento(id);
-
             if (historico) {
                 res.status(200).json({ success: true, data: historico });
             } else {
@@ -149,10 +135,8 @@ class AcompanhamentoController {
         }
     }
 
-
     async obterUltimaVersaoAcompanhamento(req, res) {
         const { id } = req.params;
-
         try {
             const ultimaVersao = await this.acompanhamentoRepository.obterUltimaVersaoAcompanhamento(id);
 
@@ -167,12 +151,8 @@ class AcompanhamentoController {
         }
     }
       
-    
-    
-
     async excluirAcompanhamento(req, res) {
         const { id } = req.params;
-
         try {
             const sucessoExclusao = await this.acompanhamentoRepository.excluirAcompanhamento(id);
 
