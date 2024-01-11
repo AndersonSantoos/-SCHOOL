@@ -31,19 +31,21 @@ router.get('/todos_acompanhamentos_fonoaudiologicos', async (req, res) => {
     }
 });
 
-router.get('/obterUltimaVersaoAcompanhamento/:id', async (req, res) => {
-    try {
-        const id = req.params.id;
-        const ultimaVersao = await acompanhamentoFonoController.obterUltimaVersaoAcompanhamentoController(id);
-
-        if (ultimaVersao) {
-            res.json(ultimaVersao);
-        } else {
-            res.status(500).json({ error: 'Erro ao obter última versão de acompanhamento' });
-        }
+router.get('/obterTodosHistorico', async (req, res) => {
+    try {X
+    await acompanhamentoFonoController.obterHistoricoAcompanhamentoFonoController(req, res);
     } catch (error) {
-        console.error('Erro ao obter última versão de acompanhamento:', error.message);
-        res.status(500).json({ error: 'Erro ao obter última versão de acompanhamento.' });
+        console.error("Erro para obter todos os acompanhamentos excluídos.");
+        res.status(500).json({ error: 'Erro ao obter os acompanhamentos.' });
+    }
+});
+
+router.get('/historicos', async (req, res) => {
+    try {
+        await acompanhamentoFonoController.obterTodosHistoricosAcompanhamentoFono(req, res);
+    } catch (error) {
+        console.error('Erro ao processar solicitação:', error);
+        return res.status(500).json({ error: 'Erro interno do servidor.' });
     }
 });
 

@@ -1,8 +1,8 @@
 class NotasModel {
-    constructor(valorNota, idAtividade, idAluno) {
+    constructor(valorNota, idAtividade, matriculaAluno) {
       this.valorNota = valorNota;
       this.idAtividade = idAtividade;
-      this.idAluno = idAluno;
+      this.matriculaAluno = matriculaAluno;
     }
   }
   

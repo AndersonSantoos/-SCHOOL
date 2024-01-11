@@ -4,8 +4,9 @@ class AcompanhamentoProfessor {
         this.visaoGeralTurma = '';
     }
 
-    registrarEvento(aluno, evento, descricao) {
+    registrarEvento(matriculaAluno, aluno, evento, descricao) {
         this.registrosIndividuais.push({
+            matriculaAluno: matriculaAluno,
             aluno: aluno,
             evento: evento,
             descricao: descricao

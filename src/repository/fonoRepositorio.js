@@ -5,16 +5,17 @@ class AcompanhamentoFonoRepository {
     constructor() {
     }
 
-    async registrarAcompanhamentoFonoaudiologo(aluno, observacoes, documentos) {
+    async registrarAcompanhamentoFonoaudiologo(matriculaAluno, aluno, observacoes, documentos) {
         try {
-            if (!aluno || !observacoes || !documentos) {
+            if (!matriculaAluno ||!aluno || !observacoes || !documentos) {
                 throw new Error('Todos os campos devem ser preenchidos.');
             }
 
-            const query = 'INSERT INTO acompanhamento_fonoaudiologo (aluno, observacoes, documentos) VALUES (?, ?, ?)';
-            await db.query(query, [aluno, observacoes, documentos]);
+            const query = 'INSERT INTO acompanhamento_fonoaudiologo (matricula_aluno, aluno, observacoes, documentos) VALUES (?, ?, ?, ?)';
+            await db.query(query, [matriculaAluno, aluno, observacoes, documentos]);
 
             const acompanhamento = new acompanhamentoFonoaudiologo({
+                matriculaAluno,
                 aluno,
                 observacoes,
                 documentos
@@ -27,8 +28,6 @@ class AcompanhamentoFonoRepository {
             throw error;
         }
     }
-    
-
 
     async obterAcompanhamentoPorId(id) {
         try {
@@ -43,6 +42,7 @@ class AcompanhamentoFonoRepository {
     
             const acompanhamentoData = result[0][0];
             const acompanhamento = new acompanhamentoFonoaudiologo(
+                acompanhamentoData.matricula_aluno,
                 acompanhamentoData.aluno,
                 acompanhamentoData.observacoes,
                 acompanhamentoData.documentos
@@ -65,6 +65,7 @@ class AcompanhamentoFonoRepository {
 
             const acompanhamentos = result[0].map(acompanhamentoData => {
                 return new acompanhamentoFonoaudiologo(
+                    acompanhamentoData.matricula_aluno,
                     acompanhamentoData.aluno,
                     acompanhamentoData.observacoes,
                     acompanhamentoData.documentos
@@ -101,19 +102,15 @@ class AcompanhamentoFonoRepository {
         }
     }
 
-    
-    
-    
-
-    async atualizarAcompanhamentoFonoaudiologo(id, aluno, observacoes, documentos) {
+    async atualizarAcompanhamentoFonoaudiologo(id, matriculaAluno, aluno, observacoes, documentos) {
         try {
-            const query = 'UPDATE acompanhamento_fonoaudiologo SET aluno = ?, observacoes = ?, documentos = ? WHERE id = ?';
-            await db.query(query, [aluno, observacoes, documentos, id]);
+            const query = 'UPDATE acompanhamento_fonoaudiologo SET matricula_aluno = ?, aluno = ?, observacoes = ?, documentos = ? WHERE id = ?';
+            await db.query(query, [matriculaAluno,aluno, observacoes, documentos, id]);
     
             console.log('Acompanhamento fonoaudiológico atualizado com sucesso.');
     
             
-            const acompanhamentoAtualizado = new acompanhamentoFonoaudiologo(aluno, observacoes, documentos);
+            const acompanhamentoAtualizado = new acompanhamentoFonoaudiologo(matriculaAluno, aluno, observacoes, documentos);
             acompanhamentoAtualizado.id = id; 
     
             return acompanhamentoAtualizado;
@@ -122,34 +119,52 @@ class AcompanhamentoFonoRepository {
             throw error;
         }
     }
-    
-    
 
-
-    async obterHistoricoAcompanhamento(id) {
+    async obterTodosHistoricosAcompanhamentoFono() {
         try {
-            const query = 'SELECT id, aluno, observacoes, documentos, status, versao FROM historico_acompanhamento_fono WHERE acompanhamento_id = ?';
-            const historico = await db.query(query, [id]);
-    
-            return historico[0];
+            const query = 'SELECT * FROM historico_acompanhamento_fonoaudiologo';
+            const [historico] = await db.query(query);
+
+            return historico;
         } catch (error) {
-            console.error('Erro ao obter histórico de acompanhamento:', error.message);
+            console.error('Erro ao obter histórico de acompanhamento (fono):', error.message);
+            throw error;
+        }
+    }
+
+    async obterTodosHistoricosAcompanhamentoFono(pageNumber = 1, pageSize = 10) {
+        try {
+            const offset = (pageNumber - 1) * pageSize;
+            const query = 'SELECT matricula_aluno, acompanhamento_id, aluno, observacoes, documentos FROM historico_acompanhamento_fonoaudiologo LIMIT ?, ?';
+            const [historicos] = await db.query(query, [offset, pageSize]);
+            const totalHistoricosQuery = 'SELECT COUNT(*) as total FROM historico_acompanhamento_fonoaudiologo';
+            const totalHistoricosResult = await db.query(totalHistoricosQuery);
+            const totalHistoricos = totalHistoricosResult[0][0].total;
+            const totalPages = Math.ceil(totalHistoricos / pageSize);
+    
+            // Construir o objeto de resposta incluindo os links para a próxima e a página anterior
+            const response = {
+                historicos,
+                pagination: {
+                    currentPage: pageNumber,
+                    pageSize,
+                    totalItems: totalHistoricos,
+                    totalPages,
+                    hasNextPage: pageNumber < totalPages,
+                    hasPreviousPage: pageNumber > 1,
+                    nextPage: pageNumber < totalPages ? `/historicos?page=${pageNumber + 1}&pageSize=${pageSize}` : null,
+                    previousPage: pageNumber > 1 ? `/historicos?page=${pageNumber - 1}&pageSize=${pageSize}` : null
+                }
+            };
+    
+            return response;
+        } catch (error) {
+            console.error('Erro ao obter históricos de acompanhamento (fono):', error.message);
             throw error;
         }
     }
     
-    async obterUltimaVersaoAcompanhamento(id) {
-        try {
-            const query = 'SELECT * FROM historico_acompanhamento_fono WHERE acompanhamento_id = ? ORDER BY versao DESC LIMIT 1';
-            const [ultimaVersao] = await db.query(query, [id]);
-    
-            return ultimaVersao[0];
-        } catch (error) {
-            console.error('Erro ao obter última versão de acompanhamento:', error.message);
-            throw error;
-        }
-    }
-    
+   
     async excluirAcompanhamentoFonoaudiologo(id) {
         try {
             const acompanhamentoExcluido = await this.obterAcompanhamentoPorId(id);
@@ -161,7 +176,7 @@ class AcompanhamentoFonoRepository {
             const { aluno, observacoes, documentos, status, versao } = acompanhamentoExcluido;
     
             // Salvar cópia na tabela de histórico
-            const historicoQuery = 'INSERT INTO historico_acompanhamento_fonoaudiologo (acompanhamento_id, aluno, observacoes, documentos, status, versao) SELECT id, aluno, observacoes, documentos, status, versao FROM acompanhamento_fonoaudiologo WHERE id = ?';
+            const historicoQuery = 'INSERT INTO historico_acompanhamento_fonoaudiologo (acompanhamento_id, matricula_aluno, aluno, observacoes, documentos, status, versao) SELECT id, matricula_aluno, aluno, observacoes, documentos, status, versao FROM acompanhamento_fonoaudiologo WHERE id = ?';
             await db.query(historicoQuery, [id]);
     
             // Atualizar versão e marcar como excluído
@@ -175,13 +190,6 @@ class AcompanhamentoFonoRepository {
             throw error;
         }
     }
-    
-    
-
-
 }   
-
-
-   
 
 module.exports = AcompanhamentoFonoRepository;

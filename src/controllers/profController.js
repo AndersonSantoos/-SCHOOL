@@ -7,9 +7,9 @@ class AcompanhamentoController {
 
     async cadastrarEvento(req, res) {
         try {
-            const { aluno, tipoEvento, descricao, relato, visaoGeral } = req.body;
+            const { matriculaAluno,  aluno, tipoEvento, descricao, relato, visaoGeral } = req.body;
 
-            if (!aluno || !tipoEvento || !descricao || !relato || !visaoGeral) {
+            if (!matriculaAluno || !aluno || !tipoEvento || !descricao || !relato || !visaoGeral) {
                 return res.status(400).json({ success: false, message: 'Os campos "aluno" e "tipoEvento" são obrigatórios.' });
             }
 
@@ -41,11 +41,11 @@ class AcompanhamentoController {
             if (typeof registrarEventoFunction === 'function') {
                 // Ajuste para passar relato e visaoGeral conforme necessário
                 if (tipoEvento.toLowerCase() === 'relato extra') {
-                    registrarEventoFunction.call(this.acompanhamentoRepository, aluno, descricao, relato, null);
+                    registrarEventoFunction.call(this.acompanhamentoRepository,matriculaAluno, aluno, descricao, relato, null);
                 } else if (tipoEvento.toLowerCase() === 'visão geral turma') {
                     registrarEventoFunction.call(this.acompanhamentoRepository, visaoGeral);
                 } else {
-                    registrarEventoFunction.call(this.acompanhamentoRepository, aluno, descricao, relato, visaoGeral);
+                    registrarEventoFunction.call(this.acompanhamentoRepository,matriculaAluno, aluno, descricao, relato, visaoGeral);
                 }
 
                 res.status(201).json({ success: true, message: `${tipoEvento} registrado com sucesso.` });

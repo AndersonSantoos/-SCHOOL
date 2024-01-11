@@ -6,15 +6,15 @@ class AcompanhamentoRepository {
         this.acompanhamentoProfessor = new AcompanhamentoProfessor();
     }
 
-    async registrarBriga(aluno, descricao, relato, visaoGeral) {
+    async registrarBriga( matriculaAluno, aluno, descricao, relato, visaoGeral) {
         try {
-            if (!aluno || !descricao || !relato || !visaoGeral) {
+            if (!matriculaAluno || !aluno || !descricao || !relato || !visaoGeral) {
                 throw new Error('Todos os campos devem ser preenchidos.');
             }
-            const query = 'INSERT INTO eventos_acompanhamento (aluno, tipo_evento, descricao, relato, visao_geral) VALUES (?, ?, ?, ?, ?)';
-            await db.query(query, [aluno, 'Briga', descricao, relato, visaoGeral]);
+            const query = 'INSERT INTO eventos_acompanhamento (matricula_aluno, aluno, tipo_evento, descricao, relato, visao_geral) VALUES (?, ?, ?, ?, ?, ?)';
+            await db.query(query, [matriculaAluno, aluno, 'Briga', descricao, relato, visaoGeral]);
 
-            this.acompanhamentoProfessor.registrarEvento(aluno, 'Briga', descricao);
+            this.acompanhamentoProfessor.registrarEvento(matriculaAluno, aluno, 'Briga', descricao);
             this.acompanhamentoProfessor.registrarVisaoGeralTurma(visaoGeral);
 
             console.log('Evento de Briga cadastrado com sucesso.');

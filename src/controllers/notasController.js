@@ -4,8 +4,8 @@ const notasRepository = require('../repository/notasRepository');
 class NotasController {
   async criarNota(req, res) {
     try {
-      const { valorNota, idAtividade, idAluno } = req.body;
-      const novaNota = { valorNota, idAtividade, idAluno };
+      const { valorNota, idAtividade, matriculaAluno } = req.body;
+      const novaNota = { valorNota, idAtividade, matriculaAluno };
 
       const idInserido = await notasRepository.criarNota(novaNota);
 
@@ -20,8 +20,8 @@ class NotasController {
 
   async recuperarNotas(req, res) {
     try {
-        const idAluno = req.params.id; 
-        const notas = await notasRepository.recuperarNotas(idAluno);
+        const matriculaAluno = req.params.id; 
+        const notas = await notasRepository.recuperarNotas(matriculaAluno);
 
         res.status(200).json({ success: true, notas });
     } catch (error) {
@@ -52,8 +52,8 @@ async obterTodasNotas(req, res) {
 async atualizarNota(req, res) {
   try {
     const { id } = req.params;
-    const { valorNota, idAtividade, idAluno } = req.body;
-    const novaNota = { valorNota, idAtividade, idAluno };
+    const { valorNota, idAtividade, matriculaAluno } = req.body;
+    const novaNota = { valorNota, idAtividade, matriculaAluno };
 
     const notaAtualizada = await notasRepository.atualizarNota(id, novaNota);
 

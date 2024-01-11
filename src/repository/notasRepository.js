@@ -6,12 +6,12 @@ class NotasRepository {
     const novaNota = new NotasModel(
       nota.valorNota,
       nota.idAtividade,
-      nota.idAluno
+      nota.matriculaAluno
     );
 
     const [result] = await db.execute(
-      "INSERT INTO notas (valor_nota, id_atividade, id_aluno) VALUES (?, ?, ?)",
-      [novaNota.valorNota, novaNota.idAtividade, novaNota.idAluno]
+      "INSERT INTO notas (valor_nota, id_atividade, matricula_aluno) VALUES (?, ?, ?)",
+      [novaNota.valorNota, novaNota.idAtividade, novaNota.matriculaAluno]
     );
 
     return result.insertId;
@@ -20,8 +20,8 @@ class NotasRepository {
 
   async recuperarNotas(idAluno) {
     try {
-        const query = "SELECT * FROM notas WHERE id_aluno = ?";
-        const queryParams = [idAluno];
+        const query = "SELECT * FROM notas WHERE matricula_aluno = ?";
+        const queryParams = [matriculaAluno];
 
         const [result] = await db.execute(query, queryParams);
         // console.log("Resultado da consulta: ", result);
@@ -34,7 +34,7 @@ class NotasRepository {
         const nota = new NotasModel(
             parseFloat(notasData.valor_nota.toFixed(2)), 
             notasData.id_atividade,
-            notasData.id_aluno
+            notasData.matricula_aluno
         );
 
         return nota;
@@ -55,7 +55,7 @@ async obterTodasNotas(pageNumber = 1, pageSize = 10) {
       return new NotasModel(
         parseFloat(notaData.valor_nota.toFixed(2)), 
         notaData.id_atividade,
-        notaData.id_aluno
+        notaData.matricula_aluno
       );
     });
 
@@ -103,14 +103,14 @@ async atualizarNota(id, novaNota) {
     const notaAtualizada = new NotasModel(
       novaNota.valorNota || notaExistente.valorNota,
       novaNota.idAtividade || notaExistente.idAtividade,
-      novaNota.idAluno || notaExistente.idAluno
+      novaNota.matriculaAluno || notaExistente.matriculaAluno
     );
 
-    const query = "UPDATE notas SET valor_nota = ?, id_atividade = ?, id_aluno = ? WHERE id_nota = ?";
+    const query = "UPDATE notas SET valor_nota = ?, id_atividade = ?, matricula_aluno = ? WHERE id_nota = ?";
     const queryParams = [
       notaAtualizada.valorNota,
       notaAtualizada.idAtividade,
-      notaAtualizada.idAluno,
+      notaAtualizada.matriculaAluno,
       id
     ];
 
