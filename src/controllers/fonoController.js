@@ -76,20 +76,24 @@ class AcompanhamentoFonoController {
         }
     }
 
-    async obterHistoricoAcompanhamentoFonoController(req, res) {
+    async obterHistoricoAcompanhamentoPorIdController(req, res) {
+        const id = req.params.id;
+    
         try {
-            const historico = await this.acompanhamentoFonoRepository.obterTodosHistoricosAcompanhamentoFono();
-
-            if (!historico || historico.length === 0) {
+            const historico = await this.acompanhamentoFonoRepository.obterHistoricoAcompanhamentoPorId(id);
+    
+            if (!historico) {
                 return res.status(404).json({ error: 'Histórico de acompanhamento fonoaudiológico não encontrado.' });
             }
-
+    
             return res.status(200).json(historico);
         } catch (error) {
-            console.error('Erro ao obter histórico de acompanhamento (fono) no controlador:', error);
+            console.error('Erro ao obter histórico de acompanhamento (fono) por ID no controlador:', error);
             return res.status(500).json({ error: 'Erro interno do servidor.' });
         }
     }
+    
+    
 
     async obterTodosHistoricosAcompanhamentoFono(req, res) {
         try {

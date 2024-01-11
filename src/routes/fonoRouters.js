@@ -31,16 +31,23 @@ router.get('/todos_acompanhamentos_fonoaudiologicos', async (req, res) => {
     }
 });
 
-router.get('/obterTodosHistorico', async (req, res) => {
-    try {X
-    await acompanhamentoFonoController.obterHistoricoAcompanhamentoFonoController(req, res);
+router.get('/obterHistoricoAcompanhamentoPorId/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const historico = await acompanhamentoFonoController.obterHistoricoAcompanhamentoPorIdController(id);
+
+        if (historico) {
+            res.json(historico);
+        } else {
+            res.status(404).json({ error: 'Histórico de acompanhamento fonoaudiológico não encontrado.' });
+        }
     } catch (error) {
-        console.error("Erro para obter todos os acompanhamentos excluídos.");
-        res.status(500).json({ error: 'Erro ao obter os acompanhamentos.' });
+        console.error('Erro ao obter histórico de acompanhamento por ID:', error.message);
+        res.status(500).json({ error: 'Erro interno do servidor.' });
     }
 });
 
-router.get('/historicos', async (req, res) => {
+router.get('/todos_historicos', async (req, res) => {
     try {
         await acompanhamentoFonoController.obterTodosHistoricosAcompanhamentoFono(req, res);
     } catch (error) {

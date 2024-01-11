@@ -120,17 +120,20 @@ class AcompanhamentoFonoRepository {
         }
     }
 
-    async obterTodosHistoricosAcompanhamentoFono() {
+    async obterHistoricoAcompanhamentoPorId(id) {
         try {
-            const query = 'SELECT * FROM historico_acompanhamento_fonoaudiologo';
-            const [historico] = await db.query(query);
-
-            return historico;
+            const query = 'SELECT * FROM historico_acompanhamento_fonoaudiologo WHERE id = ?';
+            const [historico] = await db.query(query, [id]);
+    
+            return historico.length > 0 ? historico[0] : null;
         } catch (error) {
-            console.error('Erro ao obter histórico de acompanhamento (fono):', error.message);
+            console.error('Erro ao obter histórico de acompanhamento (fono) por ID:', error.message);
             throw error;
         }
     }
+    
+    
+    
 
     async obterTodosHistoricosAcompanhamentoFono(pageNumber = 1, pageSize = 10) {
         try {
