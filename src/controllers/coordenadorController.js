@@ -7,13 +7,13 @@ class AcompanhamentoCoordenadorController {
 
     async registrarAcompanhamentoCoordenador(req, res) {
         try {
-            const { aluno, encaminhamento, profissionalEncaminhado } = req.body;
+            const { matriculaAluno, aluno, encaminhamento, profissionalEncaminhado } = req.body;
 
-            if (!aluno || !encaminhamento || !profissionalEncaminhado) {
+            if (!matriculaAluno || !aluno || !encaminhamento || !profissionalEncaminhado) {
                 return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
             }
 
-            await this.acompanhamentoCoordenadorRepository.registrarAcompanhamentoCoordenador(aluno, encaminhamento, profissionalEncaminhado);
+            await this.acompanhamentoCoordenadorRepository.registrarAcompanhamentoCoordenador(matriculaAluno, aluno, encaminhamento, profissionalEncaminhado);
 
             return res.status(200).json({ message: 'Acompanhamento de coordenador registrado com sucesso.' });
         } catch (error) {
@@ -60,7 +60,7 @@ class AcompanhamentoCoordenadorController {
 
       async atualizarAcompanhamento(req, res) {
         const id = req.params.id;
-        const { aluno, encaminhamento, profissional_encaminhado } = req.body;
+        const { matriculaAluno, aluno, encaminhamento, profissionalEncaminhado } = req.body;
     
         try {
           
@@ -73,9 +73,10 @@ class AcompanhamentoCoordenadorController {
           
           await this.acompanhamentoCoordenadorRepository.atualizarAcompanhamento(
             id,
+            matriculaAluno || acompanhamentoExistente.matriculaAluno,
             aluno || acompanhamentoExistente.aluno,
             encaminhamento || acompanhamentoExistente.encaminhamento,
-            profissional_encaminhado || acompanhamentoExistente.profissional_encaminhado
+            profissionalEncaminhado || acompanhamentoExistente.profissionalEncaminhado
           );
     
           return res.status(200).json({ message: 'Acompanhamento atualizado com sucesso.' });

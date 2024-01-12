@@ -4,16 +4,17 @@ const db = require("../db/dbConfig");
 class AcompanhamentoCoordenadorRepository {
 
 
-    async registrarAcompanhamentoCoordenador(aluno, encaminhamento, profissionalEncaminhado) {
+    async registrarAcompanhamentoCoordenador(matriculaAluno, aluno, encaminhamento, profissionalEncaminhado) {
         try {
-            if (!aluno || !encaminhamento || !profissionalEncaminhado) {
+            if (!matriculaAluno || !aluno || !encaminhamento || !profissionalEncaminhado) {
                 throw new Error('Todos os campos devem ser preenchidos.');
             }
 
-            const query = 'INSERT INTO acompanhamento_coordenador (aluno, encaminhamento, profissional_encaminhado) VALUES (?, ?, ?)';
-            await db.query(query, [aluno, encaminhamento, profissionalEncaminhado]);
+            const query = 'INSERT INTO acompanhamento_coordenador (matricula_aluno, aluno, encaminhamento, profissional_encaminhado) VALUES (?, ?, ?, ?)';
+            await db.query(query, [matriculaAluno, aluno, encaminhamento, profissionalEncaminhado]);
 
             const acompanhamento = new AcompanhamentoCoordenador({
+                matriculaAluno,
                 aluno,
                 encaminhamento,
                 profissionalEncaminhado
@@ -30,7 +31,7 @@ class AcompanhamentoCoordenadorRepository {
 
     async obterAcompanhamentoPorId(id) {
         try {
-          const query = 'SELECT aluno, encaminhamento, profissional_encaminhado FROM acompanhamento_coordenador WHERE id = ?';
+          const query = 'SELECT matricula_aluno, aluno, encaminhamento, profissional_encaminhado FROM acompanhamento_coordenador WHERE id = ?';
           const result = await db.query(query, [id]);
     
           // console.log('Resultado da consulta:', result);
@@ -41,6 +42,7 @@ class AcompanhamentoCoordenadorRepository {
     
           const acompanhamentoData = result[0][0];
           const acompanhamento = new AcompanhamentoCoordenador(
+            acompanhamentoData.matricula_aluno,
             acompanhamentoData.aluno,
             acompanhamentoData.encaminhamento,
             acompanhamentoData.profissional_encaminhado
@@ -63,6 +65,7 @@ class AcompanhamentoCoordenadorRepository {
     
             const acompanhamentos = result[0].map(acompanhamentoData => {
                 return new AcompanhamentoCoordenador(
+                  acompanhamentoData.matricula_aluno,
                     acompanhamentoData.aluno,
                     acompanhamentoData.encaminhamento,
                     acompanhamentoData.profissional_encaminhado
@@ -97,15 +100,15 @@ class AcompanhamentoCoordenadorRepository {
 
 
 
-      async atualizarAcompanhamento(id, aluno, encaminhamento, profissionalEncaminhado) {
+      async atualizarAcompanhamento(id, matriculaAluno, aluno, encaminhamento, profissionalEncaminhado) {
         const query = `
           UPDATE acompanhamento_coordenador
-          SET aluno = ?, encaminhamento = ?, profissional_encaminhado = ?
+          SET matricula_aluno = ?, aluno = ?, encaminhamento = ?, profissional_encaminhado = ?
           WHERE id = ?;
         `;
     
         try {
-          const result = await db.query(query, [aluno, encaminhamento, profissionalEncaminhado, id]);
+          const result = await db.query(query, [matriculaAluno, aluno, encaminhamento, profissionalEncaminhado, id]);
           // console.log('Resultado da atualização:', result);
     
           
