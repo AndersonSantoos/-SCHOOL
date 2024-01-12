@@ -6,5 +6,4 @@ class AcompanhamentoCoordenador {
         this.profissionalEncaminhado = profissionalEncaminhado;
     }
 }
-
 module.exports = AcompanhamentoCoordenador;

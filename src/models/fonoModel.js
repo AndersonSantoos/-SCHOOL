@@ -6,5 +6,4 @@ class acompanhamentoFonoaudiologo {
        this.documentos = documentos;
     }
 }
-
 module.exports = acompanhamentoFonoaudiologo;

@@ -5,6 +5,5 @@ class NotasModel {
       this.matriculaAluno = matriculaAluno;
     }
   }
-  
-  module.exports = NotasModel;
+module.exports = NotasModel;
   

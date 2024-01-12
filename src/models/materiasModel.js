@@ -3,5 +3,4 @@ class materiasModel {
         this.nome_materia = nome_materia;
     }
 }
-
 module.exports = materiasModel;

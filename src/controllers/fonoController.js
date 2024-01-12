@@ -12,9 +12,7 @@ class AcompanhamentoFonoController {
             if (!matriculaAluno || !aluno || !observacoes || !documentos) {
                 return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
             }
-
             await this.acompanhamentoFonoRepository.registrarAcompanhamentoFonoaudiologo(matriculaAluno, aluno, observacoes, documentos);
-
             return res.status(200).json({ message: 'Acompanhamento fonoaudiológico registrado com sucesso.' });
         } catch (error) {
             console.error('Erro ao processar solicitação:', error);
@@ -24,14 +22,11 @@ class AcompanhamentoFonoController {
 
     async obterAcompanhamentoPorId(req, res) {
         const id = req.params.id;
-    
         try {
             const acompanhamento = await this.acompanhamentoFonoRepository.obterAcompanhamentoPorId(id);
-    
             if (!acompanhamento) {
                 return res.status(404).json({ error: 'Acompanhamento não encontrado.' });
             }
-    
             return res.status(200).json(acompanhamento);
         } catch (error) {
             console.error('Erro ao obter acompanhamento por ID:', error);
@@ -44,7 +39,6 @@ class AcompanhamentoFonoController {
             const { page, pageSize } = req.query;
             const pageNumber = parseInt(page, 10) || 1;
             const pageSizeNumber = parseInt(pageSize, 10) || 10;
-
             const acompanhamentoFonoRepository = new AcompanhamentoFonoRepository();
             const acompanhamentosComPaginacao = await acompanhamentoFonoRepository.obterTodosAcompanhamentosFonoaudiologicos(
                 pageNumber,
@@ -62,13 +56,10 @@ class AcompanhamentoFonoController {
         try {
             const id = req.params.id;
             const { matriculaAluno, aluno, observacoes, documentos } = req.body;
-
             if (!matriculaAluno || !aluno || !observacoes || !documentos) {
                 return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
             }
-
             await this.acompanhamentoFonoRepository.atualizarAcompanhamentoFonoaudiologo(id, matriculaAluno, aluno, observacoes, documentos);
-
             return res.status(200).json({ message: 'Acompanhamento fonoaudiológico atualizado com sucesso.' });
         } catch (error) {
             console.error('Erro ao processar solicitação de atualização:', error);
@@ -78,14 +69,11 @@ class AcompanhamentoFonoController {
 
     async obterHistoricoAcompanhamentoPorIdController(req, res) {
         const id = req.params.id;
-    
         try {
             const historico = await this.acompanhamentoFonoRepository.obterHistoricoAcompanhamentoPorId(id);
-    
             if (!historico) {
                 return res.status(404).json({ error: 'Histórico de acompanhamento fonoaudiológico não encontrado.' });
             }
-    
             return res.status(200).json(historico);
         } catch (error) {
             console.error('Erro ao obter histórico de acompanhamento (fono) por ID no controlador:', error);
@@ -98,12 +86,10 @@ class AcompanhamentoFonoController {
             const { page, pageSize } = req.query;
             const pageNumber = parseInt(page, 10) || 1;
             const pageSizeNumber = parseInt(pageSize, 10) || 10;
-
             const historicosComPaginacao = await this.acompanhamentoFonoRepository.obterTodosHistoricosAcompanhamentoFono(
                 pageNumber,
                 pageSizeNumber
             );
-
             return res.status(200).json(historicosComPaginacao);
         } catch (error) {
             console.error('Erro ao obter todos os históricos de acompanhamento fonoaudiológicos:', error.message);
@@ -114,10 +100,8 @@ class AcompanhamentoFonoController {
 
     async excluirAcompanhamentoFonoaudiologoController(req, res) {
         const id = req.params.id;
-    
         try {
             const acompanhamentoExcluido = await this.acompanhamentoFonoRepository.excluirAcompanhamentoFonoaudiologo(id);
-    
             if (acompanhamentoExcluido) {
                 res.json({ message: 'Acompanhamento fonoaudiológico excluído com sucesso.' });
             } else {
@@ -127,7 +111,5 @@ class AcompanhamentoFonoController {
             res.status(500).json({ error: 'Erro ao excluir acompanhamento fonoaudiológico.' });
         }
     }
-    
 }
-
 module.exports = AcompanhamentoFonoController;
