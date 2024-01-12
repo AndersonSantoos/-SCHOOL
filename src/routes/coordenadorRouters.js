@@ -17,8 +17,6 @@ router.get("/todos_acompanhamentos", async (req, res) => {
     await acompanhamentoCoordenadorController.obterTodosAcompanhamentos(req, res);
 });
 
-
-
 router.put('/edit_coordenador/:id', async (req, res) => {
     await acompanhamentoCoordenadorController.atualizarAcompanhamento(req, res);
 });
