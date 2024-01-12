@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const AcompanhamentoFonoController = require('../controllers/fonoController');
-
 const acompanhamentoFonoController = new AcompanhamentoFonoController();
 
 router.post('/add_fono', async (req, res) => {

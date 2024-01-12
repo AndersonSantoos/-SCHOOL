@@ -1,10 +1,8 @@
 const acompanhamentoPsicologicoRepository = require("../repository/psicologoRepositorio");
-
 class AcompanhamentoPsicologicoController {
     constructor() {
         this.acompanhamentoPsicologicoRepository = new acompanhamentoPsicologicoRepository();
     }
-
     async registrarAcompanhamentoPsicologico(req, res) {
         try {
             const {matriculaAluno, aluno, observacoes, documentos } = req.body;
@@ -12,7 +10,6 @@ class AcompanhamentoPsicologicoController {
             if(!matriculaAluno || !aluno || !observacoes || !documentos) {
                 return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
             }
-
             await this.acompanhamentoPsicologicoRepository.registrarAcompanhamentoPsicologico(matriculaAluno, aluno, observacoes, documentos);
             return res.status(200).json({ message: 'Acompanhamento psicologico registrado com sucesso.' });
         } catch (error) {
@@ -23,13 +20,11 @@ class AcompanhamentoPsicologicoController {
 
     async obterAcompnhamentoPorId(req, res) {
         const id = req.params.id;
-
         try {
             const acompanhamento = await this.acompanhamentoPsicologicoRepository.obterAcompanhamentoPorId(id);
             if(!acompanhamento) {
                 return res.status(404).json({ error: 'Acompanhamento não encontrado.' });
             }
-
             return res.status(200).json(acompanhamento);
         } catch (error) {
             console.error('Erro ao obter acompanhamento por ID:', error);
@@ -42,7 +37,6 @@ class AcompanhamentoPsicologicoController {
             const offset = (pageNumber - 1) * pageSize;
             const query = 'SELECT * FROM acompanhamento_psicologico LIMIT ?, ?';
             const result = await db.query(query, [offset, pageSize]);
-
             const acompanhamentos = result[0].map(acompanhamentoData => {
                 return new acompanhamentoPsicologicoModel(
                     acompanhamentoData.matricula_aluno,
@@ -51,12 +45,10 @@ class AcompanhamentoPsicologicoController {
                     acompanhamentoData.documentos
                 );
             });
-
             // Obter o número total de acompanhamentos
             const totalAcompanhamentosQuery = 'SELECT COUNT(*) as total FROM acompanhamento_psicologico';
             const totalAcompanhamentosResult = await db.query(totalAcompanhamentosQuery);
             const totalAcompanhamentos = totalAcompanhamentosResult[0][0].total;
-
             const totalPages = Math.ceil(totalAcompanhamentos / pageSize);
             const response = {
                 acompanhamentos,
@@ -83,9 +75,7 @@ class AcompanhamentoPsicologicoController {
             const { page, pageSize } = req.query;
             const pageNumber = parseInt(page, 10) || 1;
             const pageSizeNumber = parseInt(pageSize, 10) || 10;
-
             const acompanhamentosComPaginacao = await this.acompanhamentoPsicologicoRepository.obterTodosAcompanhamentosPsicologicos(pageNumber, pageSizeNumber);
-
             return res.status(200).json(acompanhamentosComPaginacao);
         } catch (error) {
             console.error('Erro ao obter todos os acompanhamentos psicológicos:', error.message);
@@ -97,11 +87,9 @@ class AcompanhamentoPsicologicoController {
         try {
             const id = req.params.id;
             const { matriculaAluno, aluno, observacoes, documentos } = req.body;
-
             if(!matriculaAluno || !aluno || !observacoes || !documentos) {
                 return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
             }
-
             await this.acompanhamentoPsicologicoRepository.atualizarAcompanhamentoPsicologico(id, matriculaAluno, aluno, observacoes, documentos);
             return res.status(200).json({ message: 'Acompanhamento psicologico atualizado com sucesso.' });
         } catch (error) {
@@ -114,7 +102,6 @@ class AcompanhamentoPsicologicoController {
         try {
             const id = req.params.id;
             const resultadoExclusao = await this.acompanhamentoPsicologicoRepository.excluirAcompanhamentoPsicologico(id);
-    
             if (resultadoExclusao) {
                 return res.status(200).json({ message: 'Acompanhamento psicológico excluído com sucesso.' });
             } else {
@@ -125,7 +112,6 @@ class AcompanhamentoPsicologicoController {
             return res.status(500).json({ error: 'Erro interno do servidor.' });
         }
     }
-    
 }
 
 module.exports = AcompanhamentoPsicologicoController;

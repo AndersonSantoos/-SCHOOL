@@ -1,5 +1,4 @@
 const AcompanhamentoRepository = require('../repository/profRepositorio');
-
 class AcompanhamentoController {
     constructor() {
         this.acompanhamentoRepository = new AcompanhamentoRepository();
@@ -8,11 +7,9 @@ class AcompanhamentoController {
     async cadastrarEvento(req, res) {
         try {
             const { matriculaAluno,  aluno, tipoEvento, descricao, relato, visaoGeral } = req.body;
-
             if (!matriculaAluno || !aluno || !tipoEvento || !descricao || !relato || !visaoGeral) {
                 return res.status(400).json({ success: false, message: 'Os campos "aluno" e "tipoEvento" são obrigatórios.' });
             }
-
             let registrarEventoFunction;
             switch (tipoEvento.toLowerCase()) {
                 case 'briga':
@@ -70,7 +67,6 @@ class AcompanhamentoController {
       async atualizarAcompanhamento(req, res) {
         try {
             const { id, matriculaAluno, descricao, relato, visaoGeral, aluno, tipoEvento } = req.body;
-    
             if (!id || !matriculaAluno || !descricao) {
                 return res.status(400).json({ success: false, message: 'Os campos "id" e "descricao" são obrigatórios.' });
             }
@@ -118,8 +114,6 @@ class AcompanhamentoController {
         }
     }
 
-
-
     async obterHistoricoAcompanhamento(req, res) {
         const { id } = req.params;
         try {
@@ -139,7 +133,6 @@ class AcompanhamentoController {
         const { id } = req.params;
         try {
             const ultimaVersao = await this.acompanhamentoRepository.obterUltimaVersaoAcompanhamento(id);
-
             if (ultimaVersao) {
                 res.status(200).json({ success: true, data: ultimaVersao });
             } else {
@@ -155,7 +148,6 @@ class AcompanhamentoController {
         const { id } = req.params;
         try {
             const sucessoExclusao = await this.acompanhamentoRepository.excluirAcompanhamento(id);
-
             if (sucessoExclusao) {
                 res.status(200).json({ success: true, message: 'Acompanhamento excluído com sucesso.' });
             } else {
@@ -166,8 +158,5 @@ class AcompanhamentoController {
             res.status(500).json({ success: false, message: 'Erro interno no servidor' });
         }
     }
-
-    
 }
-
 module.exports = AcompanhamentoController;

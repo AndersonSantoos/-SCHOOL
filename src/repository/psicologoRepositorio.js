@@ -12,7 +12,6 @@ class AcompanhamentoPsicologicoRepository {
             }
             const query = 'INSERT INTO acompanhamento_psicologico (matricula_aluno, aluno, observacoes, documentos) VALUES (?, ?, ?, ?)';
             await db.query(query, [matriculaAluno, aluno, observacoes, documentos]);
-    
             const acompanhamento = new acompanhamentoPsicologico({
                 matriculaAluno,
                 aluno: observacoes,
@@ -31,13 +30,10 @@ class AcompanhamentoPsicologicoRepository {
         try {
             const query = 'SELECT * FROM acompanhamento_psicologico WHERE id = ?';
             const result = await db.query(query, [id]);
-
             // console.log('Resultado da consulta:', result);
-
             if (result[0].length === 0) {
                 return null;
             }
-
             const acompanhamentoData = result[0][0];
             const acompanhamento = new acompanhamentoPsicologico(
                 acompanhamentoData.matricula_aluno,
@@ -45,7 +41,6 @@ class AcompanhamentoPsicologicoRepository {
                 acompanhamentoData.observacoes,
                 acompanhamentoData.documentos
             );
-
             return acompanhamento;
         } catch (error) {
             console.error('Erro ao obter acompanhamento por ID:', error.message);
@@ -58,7 +53,6 @@ class AcompanhamentoPsicologicoRepository {
             const offset = (pageNumber - 1) * pageSize;
             const query = 'SELECT * FROM acompanhamento_psicologico LIMIT ?, ?';
             const result = await db.query(query, [offset, pageSize]);
-
             const acompanhamentos = result[0].map(acompanhamentoData => {
                 return new acompanhamentoPsicologico(
                     acompanhamentoData.matricula_aluno,
@@ -71,7 +65,6 @@ class AcompanhamentoPsicologicoRepository {
             const totalAcompanhamentosResult = await db.query(totalAcompanhamentosQuery);
             const totalAcompanhamentos = totalAcompanhamentosResult[0][0].total;
             const totalPages = Math.ceil(totalAcompanhamentos / pageSize);
-
             const response = {
                 acompanhamentos,
                 pagination: {
@@ -91,16 +84,14 @@ class AcompanhamentoPsicologicoRepository {
             throw error;
         }
     }
+
     async atualizarAcompanhamentoPsicologico(id, matriculaAluno, aluno, observacoes, documentos) {
         try {
             const query = 'UPDATE acompanhamento_psicologico SET matricula_aluno = ?, aluno = ?, observacoes = ?, documentos = ? WHERE id = ?';
             await db.query(query, [matriculaAluno, aluno, observacoes, documentos, id]);
-
             console.log('Acompanhamento psicológico atualizado com sucesso.');
-
             const acompanhamentoAtualizado = new acompanhamentoPsicologico(matriculaAluno, aluno, observacoes, documentos);
             acompanhamentoAtualizado.id = id;
-
             return acompanhamentoAtualizado;
         } catch (error) {
             console.error('Erro ao atualizar acompanhamento por ID:', error.message);
@@ -111,10 +102,8 @@ class AcompanhamentoPsicologicoRepository {
     async excluirAcompanhamentoPsicologico(id) {
         try {
             const acompanhamentoExcluido = await this.obterAcompanhamentoPorId(id);
-    
             const query = 'UPDATE acompanhamento_psicologico SET status = ?, versao = versao + 1 WHERE id = ?';
             await db.query(query, ['excluido', id]);
-    
             console.log('Acompanhamento psicológico excluído com sucesso.');
             return acompanhamentoExcluido;
         } catch (error) {
@@ -123,5 +112,4 @@ class AcompanhamentoPsicologicoRepository {
         }
     }  
 }
-
 module.exports = AcompanhamentoPsicologicoRepository;

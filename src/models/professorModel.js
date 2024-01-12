@@ -24,6 +24,5 @@ class AcompanhamentoProfessor {
         };
     }
 }
-
 module.exports = AcompanhamentoProfessor;
     
