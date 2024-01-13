@@ -7,7 +7,6 @@ const dbConfig = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
 };
-
 // Criar uma conexão com suporte a promessas
 const db = mysql.createConnection(dbConfig).promise();
 
