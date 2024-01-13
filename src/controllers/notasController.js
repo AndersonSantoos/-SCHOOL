@@ -23,16 +23,21 @@ class NotasController {
     }
 }
 
-async obterTodasNotas(req, res) {
+async notasPorPaginacao(req, res) {
   try {
     const { page, pageSize } = req.query;
     const pageNumber = parseInt(page, 10) || 1;
     const pageSizeNumber = parseInt(pageSize, 10) || 10;
-    const todasNotas = await notasRepository.obterTodasNotas(pageNumber, pageSizeNumber);
-    return res.status(200).json(todasNotas);
+    const notasResponse = await notasRepository.notasPorPaginacao(pageNumber, pageSizeNumber);
+    if (notasResponse) {
+      const { notas, pagination } = notasResponse;
+      res.status(200).json({ success: true, notas, pagination });
+    } else {
+      res.status(200).json({ success: true, notas: [], pagination: null });
+    }
   } catch (error) {
-    console.error('Erro ao obter todas as notas:', error.message);
-    return res.status(500).json({ error: 'Erro interno do servidor.' });
+    console.error(error);
+    res.status(500).json({ success: false, error: "Erro interno do servidor" });
   }
 }
 

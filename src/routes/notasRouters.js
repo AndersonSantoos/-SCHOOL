@@ -21,14 +21,15 @@ router.get("/info_notas/:id", async (req, res) => {
    }
    });
 
-router.get('/todas_notas', async (req, res) => {
-   try{
-      await notasController.obterTodasNotas(req, res);
-   } catch (error) {
-      console.error('Erro ao obter todas notas:', error.message);
-      res.status(500).json({ error: 'Erro ao obter todas notas.' });
-   }
-   });
+   router.get("/todas_notas", async (req, res) => {
+      try {
+        await notasController.notasPorPaginacao(req, res);
+      } catch (error) {
+        console.error('Erro ao recuperar notas:', error.message);
+        res.status(500).json({ error: 'Erro ao recuperar notas.' });
+      }
+    });
+   
 
 router.put("/edit_notas/:id", async (req, res) => {
    try{
