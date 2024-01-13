@@ -1,5 +1,4 @@
 const AcompanhamentoFonoRepository = require('../repository/fonoRepositorio');
-
 class AcompanhamentoFonoController {
     constructor() {
         this.acompanhamentoFonoRepository = new AcompanhamentoFonoRepository();
