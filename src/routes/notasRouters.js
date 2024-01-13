@@ -30,7 +30,6 @@ router.get("/info_notas/:id", async (req, res) => {
       }
     });
    
-
 router.put("/edit_notas/:id", async (req, res) => {
    try{
       await notasController.atualizarNota(req, res)
@@ -48,6 +47,4 @@ router.delete("/excluir_notas/:id", async (req, res) => {
       res.status(500).json({ error: 'Erro ao excluir nota.' });
    }
    });
-
-
 module.exports = router;
