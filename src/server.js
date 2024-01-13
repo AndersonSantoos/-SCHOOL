@@ -11,14 +11,10 @@ const coordenadorRouters = require("./routes/coordenadorRouters");
 const materiasRouters = require("./routes/materiasRouters");
 const unidadesRouters = require("./routes/unidadeRouters");
 const atividadeRouters = require("./routes/atividadeRouters");
+const alunoRouters = require("./routes/alunoRouters");
 
 app.use(cors());
 app.use(bodyParser.json());
-
-
-app.use(express.static('public'));
-
-
 app.use('/', acompanhamentoRoutes);
 app.use('/', fonoRouters);
 app.use('/', psicologico);
@@ -27,7 +23,7 @@ app.use('/', coordenadorRouters);
 app.use('/', materiasRouters);
 app.use('/', unidadesRouters); 
 app.use('/', atividadeRouters);
-
+app.use('/', alunoRouters);
 
 app.listen(port, () => {
     console.log(`Servidor funcionando na porta: ${port}`)

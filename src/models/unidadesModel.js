@@ -3,5 +3,4 @@ class unidadesModel {
         this.nome_unidade = nome_unidade;
     }
 }
-
 module.exports = unidadesModel;
