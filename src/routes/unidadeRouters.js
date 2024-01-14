@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const unidadesController = require("../controllers/unidadesController");
 const UnidadesController = new unidadesController();
-const authenticationMiddleware = require('../middleware/authenticationMiddleware'); // Importe o middleware de autenticação
+const authenticationMiddleware = require('../middleware/authenticationMiddleware'); 
 
 router.post("/add_unidade", authenticationMiddleware, async (req, res, next) => {
     try{
