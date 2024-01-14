@@ -2,7 +2,17 @@ const express = require('express');
 const router = express.Router();
 const AcompanhamentoFonoController = require('../controllers/fonoController');
 const acompanhamentoFonoController = new AcompanhamentoFonoController();
-const authenticationMiddleware = require('../middleware/authenticationMiddleware'); // Importe o middleware de autenticação
+const jwt = require('jsonwebtoken');
+const authenticationMiddleware = require('../middleware/authenticationMiddleware');
+
+router.post('/gerar_token', (req, res) => {
+    const userData = {
+        userId: '123456',
+        username: 'exemplo',
+    };
+    const token = jwt.sign(userData, process.env.SECRET_KEY, { expiresIn: '30d' });
+    res.json({ token });
+});
 
 router.post('/add_fono', authenticationMiddleware, async (req, res, next) => {
     try {
