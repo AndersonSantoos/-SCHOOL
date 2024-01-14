@@ -1,6 +1,7 @@
 const NotasModel = require("../models/notasModel");
 const db = require("../db/dbConfig");
 class NotasRepository {
+
   async criarNota(nota) {
     const novaNota = new NotasModel(
       nota.valorNota,
@@ -14,12 +15,12 @@ class NotasRepository {
     return result.insertId;
   }
 
-  async recuperarNotas(idAluno) {
+  async recuperarNotas(matriculaALuno) {
     try {
         const query = "SELECT * FROM notas WHERE matricula_aluno = ?";
-        const queryParams = [matriculaAluno];
+        const queryParams = [matriculaALuno];  
         const [result] = await db.execute(query, queryParams);
-        // console.log("Resultado da consulta: ", result);
+
         if (result.length === 0) {
             return null; 
         }
@@ -36,41 +37,50 @@ class NotasRepository {
     }
 }
 
-async obterTodasNotas(pageNumber = 1, pageSize = 10) {
+async notasPorPaginacao(pagina = 1, tamanhoPagina = 5) {
   try {
-    const offset = (pageNumber - 1) * pageSize;
-    const query = 'SELECT * FROM notas LIMIT ?, ?';
-    const result = await db.execute(query, [offset, pageSize]);
-    const notas = result[0].map(notaData => {
+    const offset = (pagina - 1) * tamanhoPagina;
+    const query = `SELECT * FROM notas LIMIT ${offset}, ${tamanhoPagina}`;
+    const [result] = await db.execute(query);
+
+    if (result.length === 0) {
+      return null;
+    }
+
+    const notas = result.map(notasData => {
       return new NotasModel(
-        parseFloat(notaData.valor_nota.toFixed(2)), 
-        notaData.id_atividade,
-        notaData.matricula_aluno
+        parseFloat(notasData.valor_nota.toFixed(2)),
+        notasData.id_atividade,
+        notasData.matricula_aluno
       );
     });
+
     // Obter o número total de notas
     const totalNotasQuery = 'SELECT COUNT(*) as total FROM notas';
     const totalNotasResult = await db.execute(totalNotasQuery);
     const totalNotas = totalNotasResult[0][0].total;
+
     // Calcular o número total de páginas
-    const totalPages = Math.ceil(totalNotas / pageSize);
-    // Construir o objeto de resposta incluindo os links para a próxima e a página anterior
+    const totalPages = Math.ceil(totalNotas / tamanhoPagina);
+
+    // Construir o objeto de resposta incluindo links para a próxima e anterior página
     const response = {
       notas,
       pagination: {
-        currentPage: pageNumber,
-        pageSize,
+        currentPage: pagina,
+        pageSize: tamanhoPagina,
         totalItems: totalNotas,
         totalPages,
-        hasNextPage: pageNumber < totalPages,
-        hasPreviousPage: pageNumber > 1,
-        nextPage: pageNumber < totalPages ? `/todas_notas?page=${pageNumber + 1}&pageSize=${pageSize}` : null,
-        previousPage: pageNumber > 1 ? `/todas_notas?page=${pageNumber - 1}&pageSize=${pageSize}` : null
-      }
+        hasNextPage: pagina < totalPages,
+        hasPreviousPage: pagina > 1,
+        nextPage: pagina < totalPages ? `/todas_notas?page=${pagina + 1}&pageSize=${tamanhoPagina}` : null,
+        previousPage: pagina > 1 ? `/todas_notas?page=${pagina - 1}&pageSize=${tamanhoPagina}` : null,
+      },
     };
+
     return response;
   } catch (error) {
-    console.error('Erro ao obter todas as notas:', error.message);
+    console.error('Erro ao obter notas com paginação:', error.message);
     throw error;
   }
 }
